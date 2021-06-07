@@ -56,7 +56,7 @@ KNOWN_CONTRACTS = {
 
 REQ_ID_TICK_BY_TICK_DATE = 1
 
-NUM_PERIODS = 9
+NUM_PERIODS = 3
 ORDER_QUANTITY = 1
 
 
@@ -91,7 +91,7 @@ class TestApp(EWrapper, EClient):
         self.started = False
         self.done = False
         self.position = 0
-        self.strategy = strategies.WMA(NUM_PERIODS, ticks_per_candle)
+        self.strategy = strategies.WMA(NUM_PERIODS)
         self.last_signal = "NONE"
         self.pending_order = False
         self.tick_count = 0
@@ -178,26 +178,17 @@ class TestApp(EWrapper, EClient):
                           specialConditions: str):
         print("TickByTickAllLast. ",
               "Candle:", str(self.tick_count // self.ticks_per_candle + 1).zfill(3),
-              "Tick:", str(self.tick_count % self.ticks_per_candle + 1).zfill(3),
+              "Period:", str(self.tick_count % self.ticks_per_candle + 1).zfill(3),
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
               "Price:", "{:.2f}".format(price),
+              "High:", "{:.2f}".format(self.strategy.high),
               "Size:", size,
-              "Up Target", "{:.2f}".format(self.strategy.target_up),
-              "Down Target", "{:.2f}".format(self.strategy.target_down),
               "WMA:",  "{:.2f}".format(self.strategy.wma),
-              "WMA_Target", "{:.2f}".format(self.strategy.wma_target),
-              # "High", self.strategy.max_value,
-              # "Low", self.strategy.min_value,
-              "ATR", self.strategy.atr_value,
-              self.strategy.signal,
-              #"Tick_List:", self.strategy.dq1,
               "Current_List:", self.strategy.dq)
         if self.tick_count % self.ticks_per_candle == self.ticks_per_candle-1:
             self.strategy.update_signal(price)
             self.checkAndSendOrder()
-        self.strategy.find_high(price)
         self.tick_count += 1
-
 
     @iswrapper
     def orderStatus(self, orderId: OrderId, status: str, filled: float,
@@ -289,7 +280,7 @@ def main():
     args = cmd_line_parser.parse_args()
     print("Using args", args)
     app = TestApp(KNOWN_CONTRACTS[args.symbol], args.ticks_per_candle)
-    app.connect("127.0.0.1", 7497, 124)
+    app.connect("127.0.0.1", 7497, 0)
     print("serverVersion:%s connectionTime:%s" % (app.serverVersion(),
                                                   app.twsConnectionTime()))
     app.run()
