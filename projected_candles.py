@@ -100,13 +100,21 @@ df2['upper_band_1_diff'] = df2['upper_band_1'] - df2['upper_band_1_prev']
 df2['lower_band_1_diff'] = df2['lower_band_1'] - df2['lower_band_1_prev']
 df2['upper_band_1_proj'] = df2['upper_band_1'] + df2['upper_band_1_diff']
 df2['lower_band_1_proj'] = df2['lower_band_1'] + df2['lower_band_1_diff']
-df2.loc[len(df2)] = df2.loc[len(df2)-1, 'lower_band_1_proj']
+# df2.loc[len(df2), 'lower_band_1'] = df2.loc[len(df2)-1, 'lower_band_1_proj']
+
+# try the loop again
+upper_band_1_diff = df2.loc[len(df2)-1, 'upper_band_1'] - df2.loc[len(df2)-2, 'upper_band_1']
+upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
+df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
+
+
 
 # append dataframe
 # https://www.geeksforgeeks.org/how-to-add-one-row-in-an-existing-pandas-dataframe/
 # https://stackoverflow.com/questions/10715965/create-pandas-dataframe-by-appending-one-row-at-a-time
 # https://stackoverflow.com/questions/49916371/how-to-append-new-row-to-dataframe-in-pandas
 # https://stackoverflow.com/questions/50607119/adding-a-new-row-to-a-dataframe-why-loclendf-instead-of-iloclendf
+# https://stackoverflow.com/questions/31674557/how-to-append-rows-in-a-pandas-dataframe-in-a-for-loop
 
 
 print(df2)
