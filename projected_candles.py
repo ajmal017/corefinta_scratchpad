@@ -12,7 +12,7 @@ from datetime import datetime
 """ do WMA 21 n = 5 ATR = 21"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2020-01-04', end='2021-06-07')
+data = yf.download(tickers = ticker, start='2020-01-04', end='2021-06-04')
 # data = yf.download(tickers = ticker, period = "1y")
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
@@ -94,26 +94,32 @@ df2['upper_band_2'] = df2['Line'] + multiplier_2 * df2['ATR']
 df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 
 # previous figures
-df2['upper_band_1_prev'] = df2['upper_band_1'].shift(1)
-df2['lower_band_1_prev'] = df2['lower_band_1'].shift(1)
-df2['upper_band_1_diff'] = df2['upper_band_1'] - df2['upper_band_1_prev']
-df2['lower_band_1_diff'] = df2['lower_band_1'] - df2['lower_band_1_prev']
-df2['upper_band_1_proj'] = df2['upper_band_1'] + df2['upper_band_1_diff']
-df2['lower_band_1_proj'] = df2['lower_band_1'] + df2['lower_band_1_diff']
+# df2['upper_band_1_prev'] = df2['upper_band_1'].shift(1)
+# df2['lower_band_1_prev'] = df2['lower_band_1'].shift(1)
+# df2['upper_band_1_diff'] = df2['upper_band_1'] - df2['upper_band_1_prev']
+# df2['lower_band_1_diff'] = df2['lower_band_1'] - df2['lower_band_1_prev']
+# df2['upper_band_1_proj'] = df2['upper_band_1'] + df2['upper_band_1_diff']
+# df2['lower_band_1_proj'] = df2['lower_band_1'] + df2['lower_band_1_diff']
 # df2.loc[len(df2), 'lower_band_1'] = df2.loc[len(df2)-1, 'lower_band_1_proj']
 
 # try the loop again
 upper_band_1_diff = df2.loc[len(df2)-1, 'upper_band_1'] - df2.loc[len(df2)-2, 'upper_band_1']
-upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
+lower_band_1_diff = df2.loc[len(df2)-1, 'lower_band_1'] - df2.loc[len(df2)-2, 'lower_band_1']
+date_diff = df2.loc[len(df2)-1, 'date'] - df2.loc[len(df2)-2, 'date']
+# upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
 # df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
 
 counter = 0
-while counter < 3:
+while counter < 10:
     df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
+    df2.loc[len(df2)-1, 'lower_band_1'] = df2.loc[len(df2) - 2, 'lower_band_1'] + lower_band_1_diff # make sure this is one row higher
+    df2.loc[len(df2) - 2, 'date'] = df2.loc[len(df2) - 3, 'date'] + date_diff
     counter += 1
 
 
+
 # append dataframe
+# https://stackoverflow.com/questions/53304656/difference-between-dates-between-corresponding-rows-in-pandas-dataframe
 # https://www.geeksforgeeks.org/how-to-add-one-row-in-an-existing-pandas-dataframe/
 # https://stackoverflow.com/questions/10715965/create-pandas-dataframe-by-appending-one-row-at-a-time
 # https://stackoverflow.com/questions/49916371/how-to-append-new-row-to-dataframe-in-pandas
@@ -121,7 +127,8 @@ while counter < 3:
 # https://stackoverflow.com/questions/31674557/how-to-append-rows-in-a-pandas-dataframe-in-a-for-loop
 
 
-print(df2)
+print(df2[['date','upper_band_1','lower_band_1']].tail(25))
+print(df2.tail(25))
 
 df2.to_csv("gauss.csv")
 
@@ -184,7 +191,7 @@ fig1.add_trace(
     go.Scatter(
         x=df2['date'],
         y=df2['Line'],
-        name="SMA",
+        name="WMA",
         mode="lines",
         line=go.scatter.Line(color="blue"),
         showlegend=True)
