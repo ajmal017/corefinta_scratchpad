@@ -105,8 +105,12 @@ df2['lower_band_1_proj'] = df2['lower_band_1'] + df2['lower_band_1_diff']
 # try the loop again
 upper_band_1_diff = df2.loc[len(df2)-1, 'upper_band_1'] - df2.loc[len(df2)-2, 'upper_band_1']
 upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
-df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
+# df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
 
+counter = 0
+while counter < 3:
+    df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
+    counter += 1
 
 
 # append dataframe
