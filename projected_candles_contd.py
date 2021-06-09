@@ -12,7 +12,7 @@ from datetime import datetime
 """ do WMA 21 n = 5 ATR = 21"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2016-01-04', end='2021-06-04')
+data = yf.download(tickers = ticker, start='2019-12-04', end='2021-06-08')
 # data = yf.download(tickers = ticker, period = "1y")
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
@@ -33,7 +33,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 5
+n = 3
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -103,18 +103,25 @@ df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 # df2.loc[len(df2), 'lower_band_1'] = df2.loc[len(df2)-1, 'lower_band_1_proj']
 
 # try the loop again
-bars_back = 2
+bars_back = 3
 upper_band_1_diff = df2.loc[len(df2)-1, 'upper_band_1'] - df2.loc[len(df2)-bars_back, 'upper_band_1']
 lower_band_1_diff = df2.loc[len(df2)-1, 'lower_band_1'] - df2.loc[len(df2)-bars_back, 'lower_band_1']
 date_diff = df2.loc[len(df2)-1, 'date'] - df2.loc[len(df2)-bars_back, 'date']
+upper_band_diff = df2.loc[len(df2)-1, 'upper_band'] - df2.loc[len(df2)-bars_back, 'upper_band']
+lower_band_diff = df2.loc[len(df2)-1, 'lower_band'] - df2.loc[len(df2)-bars_back, 'lower_band']
+
+line_diff = df2.loc[len(df2)-1, 'Line'] - df2.loc[len(df2)-bars_back, 'Line']
 # upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
 # df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
 
 counter = 0
-while counter < 10:
+while counter < 20:
     df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
     df2.loc[len(df2)-1, 'lower_band_1'] = df2.loc[len(df2) - 2, 'lower_band_1'] + lower_band_1_diff # make sure this is one row higher
-    df2.loc[len(df2) - 2, 'date'] = df2.loc[len(df2) - 3, 'date'] + date_diff
+    df2.loc[len(df2) - 1, 'upper_band'] = df2.loc[len(df2) - 2, 'upper_band'] + upper_band_diff
+    df2.loc[len(df2) - 1, 'lower_band'] = df2.loc[len(df2) - 2, 'lower_band'] + lower_band_diff
+    df2.loc[len(df2) - 1, 'Line'] = df2.loc[len(df2) - 2, 'Line'] + line_diff
+    df2.loc[len(df2) - 1, 'date'] = df2.loc[len(df2) - 2, 'date'] + date_diff
     counter += 1
 
 

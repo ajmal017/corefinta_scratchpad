@@ -103,21 +103,36 @@ df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 # df2.loc[len(df2), 'lower_band_1'] = df2.loc[len(df2)-1, 'lower_band_1_proj']
 
 # try the loop again
+
+i = df2.index[-1]
+print(i)
 bars_back = 2
 upper_band_1_diff = df2.loc[len(df2)-1, 'upper_band_1'] - df2.loc[len(df2)-bars_back, 'upper_band_1']
 lower_band_1_diff = df2.loc[len(df2)-1, 'lower_band_1'] - df2.loc[len(df2)-bars_back, 'lower_band_1']
-date_diff = df2.loc[len(df2)-1, 'date'] - df2.loc[len(df2)-bars_back, 'date']
+date_diff = df2.loc[len(df2)-1, 'date'] - df2.loc[i-bars_back, 'date']
+line_diff = df2.loc[len(df2)-1, 'Line'] - df2.loc[i-bars_back, 'Line']
+# atr_proj = df2.iloc[len(df2)-1, 'ATR']
+print(date_diff)
+print(line_diff)
+# print(atr_proj)
+
 # upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
 # df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
 
 counter = 0
-while counter < 10:
-    df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
-    df2.loc[len(df2)-1, 'lower_band_1'] = df2.loc[len(df2) - 2, 'lower_band_1'] + lower_band_1_diff # make sure this is one row higher
-    df2.loc[len(df2) - 2, 'date'] = df2.loc[len(df2) - 3, 'date'] + date_diff
+while counter < 30:
+    df2.loc[len(df2), 'Line'] = df2.loc[len(df2)-1, 'Line'] + line_diff
+    df2.loc[len(df2)-1, 'date'] = df2.loc[len(df2)-2, 'date'] + date_diff
+    df2['upper_band_1'] = df2['Line'] + df2.loc[len(df2)-3, 'ATR'] * multiplier_1
     counter += 1
 
+# https://stackoverflow.com/questions/16096627/selecting-a-row-of-pandas-series-dataframe-by-integer-index
+# https://stackoverflow.com/questions/15862034/access-index-of-last-element-in-data-frame
 
+# df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2) - 1, 'upper_band_1'] + upper_band_1_diff
+# df2.loc[len(df2) - 1, 'lower_band_1'] = df2.loc[len(df2) - 2, 'lower_band_1'] + lower_band_1_diff  # make sure this is one row higher
+# df2.loc[len(df2) - 2, 'date'] = df2.loc[len(df2) - 3, 'date'] + date_diff
+# df2.loc[len(df2) - 3, 'Line'] = df2.loc[len(df2) - 4, 'Line'] + line_diff
 
 # append dataframe
 # https://stackoverflow.com/questions/53304656/difference-between-dates-between-corresponding-rows-in-pandas-dataframe
