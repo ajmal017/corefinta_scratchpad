@@ -12,7 +12,7 @@ from datetime import datetime
 """ do WMA 21 n = 5 ATR = 21"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2020-12-04', end='2021-06-09')
+data = yf.download(tickers = ticker, start='2016-12-04', end='2019-12-09')
 # data = yf.download(tickers = ticker, period = "1y", interval = '60m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
@@ -33,7 +33,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 1
+n = 5
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -233,4 +233,3 @@ fig1.add_trace(
 )
 
 fig1.show()
-
