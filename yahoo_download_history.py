@@ -3,7 +3,7 @@ import pandas as pd
 
 ticker = "NQ=F"
 data = yf.download(tickers = ticker, start='2000-01-04', end='2021-06-01')
-# data = yf.download(tickers = ticker, period = "1y", interval = '5m')
+# data = yf.download(tickers = ticker, period = "1mo", interval = '5m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -12,4 +12,4 @@ data = yf.download(tickers = ticker, start='2000-01-04', end='2021-06-01')
 
 df = pd.DataFrame(data)
 print(df)
-df.to_csv('yahoo_download_09182000')
+df.to_csv('yahoo_download_09182000_06092021')
