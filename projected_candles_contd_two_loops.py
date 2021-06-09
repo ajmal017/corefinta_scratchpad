@@ -12,8 +12,8 @@ from datetime import datetime
 """ do WMA 21 n = 5 ATR = 21"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2019-12-04', end='2021-06-08')
-# data = yf.download(tickers = ticker, period = "1y")
+data = yf.download(tickers = ticker, start='2010-12-04', end='2021-06-01')
+# data = yf.download(tickers = ticker, period = "1y", interval = '5m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -33,7 +33,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 5
+n = 10
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
