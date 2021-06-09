@@ -12,8 +12,8 @@ from datetime import datetime
 """ do WMA 21 n = 5 ATR = 21"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2010-12-04', end='2021-06-01')
-# data = yf.download(tickers = ticker, period = "1y", interval = '5m')
+data = yf.download(tickers = ticker, start='2020-12-04', end='2021-06-09')
+# data = yf.download(tickers = ticker, period = "1y", interval = '60m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -33,7 +33,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 10
+n = 1
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -88,7 +88,7 @@ df3['close'] = df2['line_change']
 df3['open'] = df2['line_change']
 df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
-periods_change = 42
+periods_change = 40
 df3['change_SMA'] = TA.SMA(df3, periods_change)
 # df3.to_csv('sma_change.csv')
 df2['change_SMA'] = df3['change_SMA']
@@ -137,10 +137,10 @@ ATR_1 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_1
 
 counter1 = 0
 while counter1 < bars_out:
-    df2.loc[len(df2) - bars_out + counter1, 'upper_band_1'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] + ATR_1
-    df2.loc[len(df2) - bars_out + counter1, 'lower_band_1'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] - ATR_1
-    df2.loc[len(df2) - bars_out + counter1, 'upper_band'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] + ATR
-    df2.loc[len(df2) - bars_out + counter1, 'lower_band'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] - ATR
+    df2.loc[len(df2) - bars_out + counter1-1, 'upper_band_1'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] + ATR_1
+    df2.loc[len(df2) - bars_out + counter1-1, 'lower_band_1'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] - ATR_1
+    df2.loc[len(df2) - bars_out + counter1-1, 'upper_band'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] + ATR
+    df2.loc[len(df2) - bars_out + counter1-1, 'lower_band'] = df2.loc[len(df2) - bars_out - 1 + counter1, 'Line'] - ATR
     counter1 += 1
 
 # df2.loc[len(df2), 'upper_band_1'] = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
@@ -162,7 +162,7 @@ print(df2.loc[len(df2) - bars_out - 1, 'ATR'])
 # https://stackoverflow.com/questions/31674557/how-to-append-rows-in-a-pandas-dataframe-in-a-for-loop
 
 
-print(df2[['date','upper_band_1','lower_band_1', 'Line']].tail(25))
+print(df2[['date', 'upper_band', 'lower_band', 'upper_band_1','lower_band_1', 'Line']].tail(25))
 print(df2.tail(25))
 
 df2.to_csv("gauss.csv")
