@@ -14,7 +14,7 @@ from datetime import datetime
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2019-01-04', end='2019-12-31')
+data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 # data = yf.download(tickers = ticker, period = "1y", interval = '60m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
