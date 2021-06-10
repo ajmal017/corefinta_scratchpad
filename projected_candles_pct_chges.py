@@ -9,10 +9,12 @@ import pandas as pd
 
 from datetime import datetime
 
+
 """ do WMA 21 n = 5 ATR = 21"""
+""" do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 
 ticker = "NQ=F"
-data = yf.download(tickers = ticker, start='2020-12-04', end='2021-06-09')
+data = yf.download(tickers = ticker, start='2019-01-04', end='2019-12-31')
 # data = yf.download(tickers = ticker, period = "1y", interval = '60m')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
@@ -33,7 +35,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 1
+n = 5
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -90,7 +92,7 @@ df3['open'] = df2['line_change']
 df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
-periods_change = 17
+periods_change = 6
 
 df3['change_SMA'] = TA.SMA(df3, periods_change)
 # df3.to_csv('sma_change.csv')
