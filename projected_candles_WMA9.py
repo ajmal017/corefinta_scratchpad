@@ -10,12 +10,14 @@ import pandas as pd
 from datetime import datetime
 
 
-""" do WMA 21 or 9 n = 5 ATR = 21"""
+""" do WMA 9 (all ATR w/i 1 band) 21 or 34 (smooth trend) for daily or 9 for weekly n = 5 ATR = 21"""
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
+""" WMA9 for 2 day bars with ATR 21 """
 
-ticker = "NQ=F"
+ticker = "ES=F"
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
-data = yf.download(tickers = ticker, period = "2y", interval = '1wk')
+#data = yf.download(tickers = ticker, period = "2y", interval = '1wk')
+data = yf.download(tickers = ticker, start='2016-01-04', end='2017-06-09', interval = '1d')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -35,7 +37,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 1
+n = 2
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -92,7 +94,7 @@ df3['open'] = df2['line_change']
 df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
-periods_change = 6
+periods_change = 1
 
 df3['change_SMA'] = TA.SMA(df3, periods_change)
 # df3.to_csv('sma_change.csv')
