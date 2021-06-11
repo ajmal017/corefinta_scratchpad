@@ -15,10 +15,10 @@ from datetime import datetime
 """ WMA9 for 2 day bars with ATR 21 """
 
 ticker = "ES=F"
-
+interval = '1d'
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 #data = yf.download(tickers = ticker, period = "2y", interval = '1wk')
-data = yf.download(tickers = ticker, start='2020-01-04', end='2021-06-09', interval = '1d')
+data = yf.download(tickers = ticker, start='2020-01-04', end='2021-06-09', interval = interval)
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -266,7 +266,7 @@ fig1.add_trace(
 )
 
 fig1.update_layout(
-    title = f'{ticker} Chart'
+    title = f'{ticker} {interval} n = {n} ATR {num_periods_ATR} Chart'
 )
 
 fig1.show()
