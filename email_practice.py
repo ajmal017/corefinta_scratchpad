@@ -1,5 +1,7 @@
 import smtplib, ssl
 
+# https://stackoverflow.com/questions/10445528/python-mail-sent-by-script-is-marked-as-spam-by-gmail
+
 port = 587  # For starttls
 smtp_server = "smtp.gmail.com"
 sender_email = "jmzakatees@gmail.com"
