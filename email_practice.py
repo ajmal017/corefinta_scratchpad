@@ -11,10 +11,10 @@ password = 'suite203!'
 message = f'''\
 From: Javed Siddique {sender_email}
 To: Javed Siddique {receiver_email}
-Subject: Your mom is sick
+Subject: When I put it in a function
 
 
-Dear Javed, She is at St. Peter's Hospital.  I will send the address when I get there.\
+Dear Javed, Then there is no subject\
 
 '''
 

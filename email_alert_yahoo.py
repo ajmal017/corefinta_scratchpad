@@ -1,4 +1,8 @@
 import smtplib, ssl
+import time
+
+# use outlook app and put it in favorites by selecting the sender email address and clicking star in upper-right
+# then set notifications for favorites
 
 class EmailYahoo:
 
@@ -9,12 +13,14 @@ class EmailYahoo:
         receiver_email = 'crudedecay@gmail.com'
         password = 'suite203!'
 
-        message = '''\
-        \
-        Subject: Buy this stock\
-        
-        TSLA\
-        
+        message = f'''\
+        From: Javed Siddique {sender_email}
+        To: Javed Siddique {receiver_email}
+        Subject: Only one trigger
+
+
+        Dear Javed, This trigger will execute only once\
+
         '''
 
         # send email here
@@ -24,12 +30,12 @@ class EmailYahoo:
 
         # Try to log in to server and send email
         try:
-            server = smtplib.SMTP(smtp_server,port)
-            server.ehlo() # Can be omitted
-            server.starttls(context=context) # Secure the connection
-            server.ehlo() # Can be omitted
+            server = smtplib.SMTP(smtp_server, port)
+            server.ehlo()  # Can be omitted
+            server.starttls(context=context)  # Secure the connection
+            server.ehlo()  # Can be omitted
             server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, message )
+            server.sendmail(sender_email, receiver_email, message)
         except Exception as e:
             print('It did not work!')
             print(e)
@@ -37,12 +43,16 @@ class EmailYahoo:
             server.quit()
 
     def trigger(self):
-        x = 7
-        y = x + 1
-        if y > 5:
-            self.email_func()
-        else:
-            print('nothing to email yet!')
+        counter = 0
+        x = 0
+        while counter < 10:
+            x = x + 1
+            print(x)
+            if x == 3:
+                self.email_func()
+            else:
+                time.sleep(10)
+                counter += 1
 
 def main():
     app = EmailYahoo()
