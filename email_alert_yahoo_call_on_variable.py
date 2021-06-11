@@ -54,7 +54,7 @@ class EmailYahoo:
             x = x + 1
             print(x)
             if x == 3:
-                self.buy_msg = "Sell today"
+                self.buy_msg = "Short that mutha!"
                 self.email_func()
             else:
                 time.sleep(10)
