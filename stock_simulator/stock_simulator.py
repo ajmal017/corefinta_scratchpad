@@ -21,12 +21,18 @@ class StockSimulator:
                 self.stock_list.pop(0)
             print(self.stock_list)
             # self.simple_trigger()
+            self.sma()
             time.sleep(5)
             self.counter += 1
 
     def simple_trigger(self):
         if self.stock_price > 4:
             print('you hit it!')
+
+    def sma(self):
+        simple_ma = sum(self.stock_list) / len(self.stock_list)
+        formatted_simplema = "{:.2f}".format(simple_ma)
+        print(formatted_simplema)
 
     def trigger(self):
         x = 0
