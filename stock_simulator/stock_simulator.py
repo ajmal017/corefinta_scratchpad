@@ -13,7 +13,7 @@ class StockSimulator:
         self.buy_msg = "Buy today"
         self.stock_price = 0
         self.stock_list = []
-        self.wma = 0
+        self.indicator = 0
         self.signal = "NONE"
 
     # This is the simulator that executes all the methods
@@ -52,20 +52,22 @@ class StockSimulator:
         df['high'] = self.stock_list
         df['low'] = self.stock_list
         df['close'] = self. stock_list
-        df['indicator'] = TA.WMA(df, len(self.stock_list))
+        fin_ta_indicator = TA.WMA
+
+        df['indicator'] = fin_ta_indicator(df, len(self.stock_list))
         recent_indicator_value = df['indicator'].iloc[-1]
-        self.wma = "{:.2f}".format(recent_indicator_value)
-        wma_msg = f'WMA: {self.wma}'
+        self.indicator = "{:.2f}".format(recent_indicator_value)
+        wma_msg = f'WMA: {self.indicator}'
         print(wma_msg)
 
     # Generate buy/sell signal based on trend pointing up or down on indicator
     def update_signal(self):
-        prev_wma = self.wma
+        prev_indicator = self.indicator
         self.finta_indicator()
-        if prev_wma != 0:
-            if self.wma > prev_wma:
+        if prev_indicator != 0:
+            if self.indicator > prev_indicator:
                 self.signal = "LONG"
-            elif self.wma < prev_wma:
+            elif self.indicator < prev_indicator:
                 self.signal = "SHORT"
         print(self.signal)
 
