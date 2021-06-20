@@ -17,18 +17,26 @@ class StockSimulator:
         self.signal = "NONE"
 
     def simulator(self):
-        while self.counter < 10:
-            self.stock_price = random.randint(0, 10)
-            print(self.stock_price)
-            self.stock_list.append(self.stock_price)
-            if len(self.stock_list) > 3:
-                self.stock_list.pop(0)
-            print(self.stock_list)
-            # self.simple_trigger()
-            # self.sma()
+        num_candles_in_test_period = 10
+        # length_of_indicator = 4
+        sleep_seconds = 2
+        while self.counter < num_candles_in_test_period:
+            self.generate_stock_price()
+            self.stock_list_mgr()
             self.update_signal()
-            time.sleep(5)
+            time.sleep(sleep_seconds)
             self.counter += 1
+
+    def generate_stock_price(self):
+        self.stock_price = random.randint(0, 10)
+        print(self.stock_price)
+
+    def stock_list_mgr(self):
+        length_of_indicator = 4
+        self.stock_list.append(self.stock_price)
+        if len(self.stock_list) > length_of_indicator:
+            self.stock_list.pop(0)
+        print(self.stock_list)
 
     def update_signal(self):
         prev_wma = self.wma
@@ -40,14 +48,6 @@ class StockSimulator:
                 self.signal = "SHORT"
         print(self.signal)
 
-    def simple_trigger(self):
-        if self.stock_price > 4:
-            print('you hit it!')
-
-    def sma(self):
-        simple_ma = sum(self.stock_list) / len(self.stock_list)
-        formatted_simplema = "{:.2f}".format(simple_ma)
-        print(formatted_simplema)
 
     def finta_sma(self):
         df = pd.DataFrame()
@@ -59,6 +59,17 @@ class StockSimulator:
         self.wma = "{:.2f}".format(df['sma'].iloc[-1])
         wma_msg = f'WMA: {self.wma}'
         print(wma_msg)
+
+
+# just messing around in a test area down here - not used in the code
+    def simple_trigger(self):
+        if self.stock_price > 4:
+            print('you hit it!')
+
+    def sma(self):
+        simple_ma = sum(self.stock_list) / len(self.stock_list)
+        formatted_simplema = "{:.2f}".format(simple_ma)
+        print(formatted_simplema)
 
     def trigger(self):
         x = 0
