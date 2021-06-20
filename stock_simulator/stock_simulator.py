@@ -16,6 +16,7 @@ class StockSimulator:
         self.wma = 0
         self.signal = "NONE"
 
+    # This is the simulator that executes all the methods
     def simulator(self):
         num_candles_in_test_period = 10
         # length_of_indicator = 4
@@ -27,27 +28,24 @@ class StockSimulator:
             time.sleep(sleep_seconds)
             self.counter += 1
 
+    # Generate the stock price
     def generate_stock_price(self):
-        self.stock_price = random.randint(0, 10)
-        print(self.stock_price)
+        lowest_stock_px = 1
+        highest_stock_px = 10
+        self.stock_price = "{:.2f}".format(random.randint(lowest_stock_px, highest_stock_px))
+        stock_price_msg = f'latest stock price: {self.stock_price}'
+        print(stock_price_msg)
 
+    # Create a list that collects most recent indicator length of stock prices
     def stock_list_mgr(self):
         length_of_indicator = 4
         self.stock_list.append(self.stock_price)
         if len(self.stock_list) > length_of_indicator:
             self.stock_list.pop(0)
-        print(self.stock_list)
+        stock_list_msg = f'list of stock prices: {self.stock_list}'
+        print(stock_list_msg)
 
-    def update_signal(self):
-        prev_wma = self.wma
-        self.finta_indicator()
-        if prev_wma != 0:
-            if self.wma > prev_wma:
-                self.signal = "LONG"
-            elif self.wma < prev_wma:
-                self.signal = "SHORT"
-        print(self.signal)
-
+    # Calculate indicator value by converting list to a dataframe and using Finta package
     def finta_indicator(self):
         df = pd.DataFrame()
         df['open'] = self.stock_list
@@ -60,29 +58,16 @@ class StockSimulator:
         wma_msg = f'WMA: {self.wma}'
         print(wma_msg)
 
-
-# just messing around in a test area down here - not used in the code
-    def simple_trigger(self):
-        if self.stock_price > 4:
-            print('you hit it!')
-
-    def sma(self):
-        simple_ma = sum(self.stock_list) / len(self.stock_list)
-        formatted_simplema = "{:.2f}".format(simple_ma)
-        print(formatted_simplema)
-
-    def trigger(self):
-        x = 0
-        while self.counter < 10:
-            x = x + 1
-            print(x)
-            if x == 4:
-                self.buy_msg = f"Short that {x} mutha!"
-                print(self.buy_msg)
-                break
-            else:
-                time.sleep(2)
-                self.counter += 1
+    # Generate buy/sell signal based on trend pointing up or down on indicator
+    def update_signal(self):
+        prev_wma = self.wma
+        self.finta_indicator()
+        if prev_wma != 0:
+            if self.wma > prev_wma:
+                self.signal = "LONG"
+            elif self.wma < prev_wma:
+                self.signal = "SHORT"
+        print(self.signal)
 
 def main():
     app = StockSimulator()
