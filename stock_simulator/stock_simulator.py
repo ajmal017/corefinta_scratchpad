@@ -40,7 +40,7 @@ class StockSimulator:
 
     def update_signal(self):
         prev_wma = self.wma
-        self.finta_sma()
+        self.finta_indicator()
         if prev_wma != 0:
             if self.wma > prev_wma:
                 self.signal = "LONG"
@@ -48,15 +48,15 @@ class StockSimulator:
                 self.signal = "SHORT"
         print(self.signal)
 
-
-    def finta_sma(self):
+    def finta_indicator(self):
         df = pd.DataFrame()
         df['open'] = self.stock_list
         df['high'] = self.stock_list
         df['low'] = self.stock_list
         df['close'] = self. stock_list
-        df['sma'] = TA.WMA(df, len(self.stock_list))
-        self.wma = "{:.2f}".format(df['sma'].iloc[-1])
+        df['indicator'] = TA.WMA(df, len(self.stock_list))
+        recent_indicator_value = df['indicator'].iloc[-1]
+        self.wma = "{:.2f}".format(recent_indicator_value)
         wma_msg = f'WMA: {self.wma}'
         print(wma_msg)
 
