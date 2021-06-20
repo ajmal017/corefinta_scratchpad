@@ -25,20 +25,18 @@ class StockSimulator:
                 self.stock_list.pop(0)
             print(self.stock_list)
             # self.simple_trigger()
-            # self.sma()
-            self.update_signal()
+            self.sma()
+            prev_wma = self.wma
+            self.finta_sma()
+            if prev_wma != 0:
+                if self.wma > prev_wma:
+                    self.signal = "LONG"
+                elif self.wma < prev_wma:
+                    self.signal = "SHORT"
+            print(self.signal)
+
             time.sleep(5)
             self.counter += 1
-
-    def update_signal(self):
-        prev_wma = self.wma
-        self.finta_sma()
-        if prev_wma != 0:
-            if self.wma > prev_wma:
-                self.signal = "LONG"
-            elif self.wma < prev_wma:
-                self.signal = "SHORT"
-        print(self.signal)
 
     def simple_trigger(self):
         if self.stock_price > 4:
@@ -56,9 +54,8 @@ class StockSimulator:
         df['low'] = self.stock_list
         df['close'] = self. stock_list
         df['sma'] = TA.WMA(df, len(self.stock_list))
-        self.wma = "{:.2f}".format(df['sma'].iloc[-1])
-        wma_msg = f'WMA: {self.wma}'
-        print(wma_msg)
+        self.wma = df['sma'].iloc[-1]
+        print(self.wma)
 
     def trigger(self):
         x = 0
