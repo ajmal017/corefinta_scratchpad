@@ -10,7 +10,6 @@ class StockSimulator:
 
     def __init__(self):
         self.counter = 0
-        self.buy_msg = "Buy today"
         self.stock_price = 0
         self.stock_list = []
         self.indicator = 0
@@ -32,8 +31,9 @@ class StockSimulator:
     def generate_stock_price(self):
         lowest_stock_px = 1
         highest_stock_px = 10
-        self.stock_price = "{:.2f}".format(random.randint(lowest_stock_px, highest_stock_px))
-        stock_price_msg = f'latest stock price: {self.stock_price}'
+        self.stock_price = random.randint(lowest_stock_px, highest_stock_px)
+        stock_px_formatted = "{:.2f}".format(self.stock_price)
+        stock_price_msg = f'latest stock price: {stock_px_formatted}'
         print(stock_price_msg)
 
     # Create a list that collects most recent indicator length of stock prices
@@ -53,11 +53,12 @@ class StockSimulator:
         df['low'] = self.stock_list
         df['close'] = self. stock_list
         fin_ta_indicator = TA.WMA
-
         df['indicator'] = fin_ta_indicator(df, len(self.stock_list))
         recent_indicator_value = df['indicator'].iloc[-1]
-        self.indicator = "{:.2f}".format(recent_indicator_value)
-        wma_msg = f'WMA: {self.indicator}'
+        self.indicator = recent_indicator_value
+        wma_formatted = "{:.2f}".format(self.indicator)
+        fin_ta_formatted = fin_ta_indicator.__name__
+        wma_msg = f'{fin_ta_formatted}: {wma_formatted}'
         print(wma_msg)
 
     # Generate buy/sell signal based on trend pointing up or down on indicator
@@ -66,9 +67,9 @@ class StockSimulator:
         self.finta_indicator()
         if prev_indicator != 0:
             if self.indicator > prev_indicator:
-                self.signal = "LONG"
+                self.signal = "LONG at " + str(self.indicator) + ' or higher\n'
             elif self.indicator < prev_indicator:
-                self.signal = "SHORT"
+                self.signal = "SHORT at " + str(self.indicator) + ' or lower\n'
         print(self.signal)
 
 def main():
