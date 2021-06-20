@@ -3,8 +3,8 @@ import random
 from finta import TA
 import pandas as pd
 
-# use outlook app and put it in favorites by selecting the sender email address and clicking star in upper-right
-# then set notifications for favorites
+# creates a stock simulator, generates an indicator and buy/sell signals
+# can be ported to any market data API, for prices and FIX engine to send trades to the market
 
 class StockSimulator:
 
