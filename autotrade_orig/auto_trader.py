@@ -18,13 +18,12 @@ from ibapi.execution import Execution
 
 import strategies
 
-
 CONTRACT_ES = Contract()
 CONTRACT_ES.symbol = "ES"
 CONTRACT_ES.secType = "FUT"
 CONTRACT_ES.exchange = "GLOBEX"
 CONTRACT_ES.currency = "USD"
-CONTRACT_ES.lastTradeDateOrContractMonth = "202106"
+CONTRACT_ES.lastTradeDateOrContractMonth = "202109"
 
 CONTRACT_NQ = Contract()
 CONTRACT_NQ.symbol = "NQ"
@@ -58,8 +57,7 @@ REQ_ID_TICK_BY_TICK_DATE = 1
 
 NUM_PERIODS = 9
 ORDER_QUANTITY = 1
-symbol = 'NQ'
-ticks_per_candle = 144
+
 
 def SetupLogger():
     if not os.path.exists("log"):
@@ -92,7 +90,7 @@ class TestApp(EWrapper, EClient):
         self.started = False
         self.done = False
         self.position = 0
-        self.strategy = strategies.WMA(NUM_PERIODS, ticks_per_candle)
+        self.strategy = strategies.WMA(NUM_PERIODS)
         self.last_signal = "NONE"
         self.pending_order = False
         self.tick_count = 0
@@ -179,26 +177,14 @@ class TestApp(EWrapper, EClient):
                           specialConditions: str):
         print("TickByTickAllLast. ",
               "Candle:", str(self.tick_count // self.ticks_per_candle + 1).zfill(3),
-              "Tick:", str(self.tick_count % self.ticks_per_candle + 1).zfill(3),
+              "Period:", str(self.tick_count % self.ticks_per_candle + 1).zfill(3),
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
               "Price:", "{:.2f}".format(price),
-              "Size:", size,
-              "Up Target", "{:.2f}".format(self.strategy.target_up),
-              "Down Target", "{:.2f}".format(self.strategy.target_down),
-              "WMA:",  "{:.2f}".format(self.strategy.wma),
-              "WMA_Target", "{:.2f}".format(self.strategy.wma_target),
-              # "High", self.strategy.max_value,
-              # "Low", self.strategy.min_value,
-              "ATR", self.strategy.atr_value,
-              self.strategy.signal,
-              #"Tick_List:", self.strategy.dq1,
-              "Current_List:", self.strategy.dq)
+              "Size:", size)
         if self.tick_count % self.ticks_per_candle == self.ticks_per_candle-1:
             self.strategy.update_signal(price)
             self.checkAndSendOrder()
-        self.strategy.find_high(price)
         self.tick_count += 1
-
 
     @iswrapper
     def orderStatus(self, orderId: OrderId, status: str, filled: float,
@@ -281,16 +267,16 @@ def main():
     logging.debug("now is %s", datetime.datetime.now())
     logging.getLogger().setLevel(logging.ERROR)
 
-    # cmd_line_parser = argparse.ArgumentParser("auto_trader.py")
-    # cmd_line_parser.add_argument("-s", "--symbol", action="store", type=str, required=True,
-    #                             dest="symbol", help="The symbol to use", choices=KNOWN_CONTRACTS.keys())
-    #cmd_line_parser.add_argument("-t", "--ticks_per_candle", action="store", type=int, required=True,
-    #                             dest="ticks_per_candle", help="Ticks per candle, typical values: 377, 1600")
+    cmd_line_parser = argparse.ArgumentParser("auto_trader.py")
+    cmd_line_parser.add_argument("-s", "--symbol", action="store", type=str, required=True,
+                                 dest="symbol", help="The symbol to use", choices=KNOWN_CONTRACTS.keys())
+    cmd_line_parser.add_argument("-t", "--ticks_per_candle", action="store", type=int, required=True,
+                                 dest="ticks_per_candle", help="Ticks per candle, typical values: 377, 1600")
 
     args = cmd_line_parser.parse_args()
     print("Using args", args)
     app = TestApp(KNOWN_CONTRACTS[args.symbol], args.ticks_per_candle)
-    app.connect("127.0.0.1", 7497, 124)
+    app.connect("127.0.0.1", 7497, 0)
     print("serverVersion:%s connectionTime:%s" % (app.serverVersion(),
                                                   app.twsConnectionTime()))
     app.run()

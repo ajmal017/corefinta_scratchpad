@@ -24,14 +24,14 @@ CONTRACT_ES.symbol = "ES"
 CONTRACT_ES.secType = "FUT"
 CONTRACT_ES.exchange = "GLOBEX"
 CONTRACT_ES.currency = "USD"
-CONTRACT_ES.lastTradeDateOrContractMonth = "202106"
+CONTRACT_ES.lastTradeDateOrContractMonth = "202109"
 
 CONTRACT_NQ = Contract()
 CONTRACT_NQ.symbol = "NQ"
 CONTRACT_NQ.secType = "FUT"
 CONTRACT_NQ.exchange = "GLOBEX"
 CONTRACT_NQ.currency = "USD"
-CONTRACT_NQ.lastTradeDateOrContractMonth = "202106"
+CONTRACT_NQ.lastTradeDateOrContractMonth = "202109"
 
 CONTRACT_SPY = Contract()
 CONTRACT_SPY.symbol = "SPY"

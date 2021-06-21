@@ -329,8 +329,8 @@ class TestApp(TestWrapper, TestClient):
         eurusd_contract.exchange = 'GLOBEX'
         eurusd_contract.currency = 'USD'
         eurusd_contract.lastTradeDateOrContractMonth = "202106"
-        # self.reqRealTimeBars(3001, ContractSamples.EurGbpFx(), 5, "MIDPOINT", True, [])
-        self.reqRealTimeBars(3001, eurusd_contract, 5, "TRADES", False, [])
+        self.reqRealTimeBars(3001, ContractSamples.EurGbpFx(), 5, "MIDPOINT", True, [])
+        #self.reqRealTimeBars(3001, eurusd_contract, 5, "TRADES", False, [])
         # ! [reqrealtimebars]
 
     @iswrapper

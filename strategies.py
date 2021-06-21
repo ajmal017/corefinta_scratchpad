@@ -31,6 +31,9 @@ class WMA:
         # self.wma = wma_total / self.period_sum
         data = list(self.dq)
         df = pd.DataFrame(data, columns=['close'])
+        df['open'] = df['close']
+        df['high'] = df['close']
+        df['low'] = df['close']
         # df['sma'] = df['close'].rolling(window=self.periods).mean()
         df['sma'] = TA.SMA(df, self.periods)
         self.wma = df['sma'].iloc[-1]

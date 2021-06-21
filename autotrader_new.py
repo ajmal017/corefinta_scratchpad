@@ -27,8 +27,20 @@ from ibapi.wrapper import EWrapper
 from ibapi.utils import iswrapper
 # types
 from ibapi.common import *  # @UnusedWildImport
-from ibapi.order import *  # @UnusedWildImport
+# from ibapi.order import *  # @UnusedWildImport
 from DBHelper import DBHelper
+from ibapi.order import Order
+from ibapi.order_state import OrderState
+from ibapi.execution import Execution
+
+import strategies
+
+eurusd_contract = Contract()
+REQ_ID_TICK_BY_TICK_DATE = 1
+
+NUM_PERIODS = 3
+ORDER_QUANTITY = 1
+ticks_per_candle = 5
 
 
 def SetupLogger():
@@ -98,6 +110,17 @@ class TestApp(EWrapper, EClient):
         self.globalCancelOnly = False
         self.simplePlaceOid = None
         self._my_errors = {}
+        #self.contract = contract
+        self.ticks_per_candle = ticks_per_candle
+        self.nextValidOrderId = None
+        self.started = False
+        self.done = False
+        self.position = 0
+        self.strategy = strategies.WMA(NUM_PERIODS, ticks_per_candle)
+        self.last_signal = "NONE"
+        self.pending_order = False
+        self.tick_count = 0
+
 
     def getDBConnection(self):
 
@@ -231,7 +254,7 @@ class TestApp(EWrapper, EClient):
     @printWhenExecuting
     def tickDataOperations_req(self):
         # Create contract object
-        eurusd_contract = Contract()
+
         eurusd_contract.symbol = 'NQ'
         eurusd_contract.secType = 'FUT'
         eurusd_contract.exchange = 'GLOBEX'
@@ -259,27 +282,95 @@ class TestApp(EWrapper, EClient):
     def tickByTickAllLast(self, reqId: int, tickType: int, time: int, price: float,
                           size: int, tickAttribLast: TickAttribLast, exchange: str,
                           specialConditions: str):
-        super().tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast,
-                                  exchange, specialConditions)
-        if tickType == 1:
-            print("Last.", end='')
-        else:
-            print("AllLast.", end='')
-        print(" ReqId:", reqId,
+        print("TickByTickAllLast. ",
+              "Candle:", str(self.tick_count // self.ticks_per_candle + 1).zfill(3),
+              "Tick:", str(self.tick_count % self.ticks_per_candle + 1).zfill(3),
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
-              "Price:", price, "Size:", size, "Exch:", exchange,
-              "Spec Cond:", specialConditions, "PastLimit:", tickAttribLast.pastLimit, "Unreported:",
-              tickAttribLast.unreported)
-        #self.persistData(reqId, time, price,
-         #                size, tickAttribLast)
+              "Price:", "{:.2f}".format(price),
+              "Size:", size,
+              "Up Target", "{:.2f}".format(self.strategy.target_up),
+              "Down Target", "{:.2f}".format(self.strategy.target_down),
+              "WMA:", "{:.2f}".format(self.strategy.wma),
+              "WMA_Target", "{:.2f}".format(self.strategy.wma_target),
+              # "High", self.strategy.max_value,
+              # "Low", self.strategy.min_value,
+              "ATR", self.strategy.atr_value,
+              self.strategy.signal)
+              # "Tick_List:", self.strategy.dq1,
+              # "Current_List:", self.strategy.dq)
+        if self.tick_count % self.ticks_per_candle == self.ticks_per_candle - 1:
+            self.strategy.update_signal(price)
+            self.checkAndSendOrder()
+        self.strategy.find_high(price)
+        self.tick_count += 1
 
-    def persistData(self, reqId: int, time: int, price: float,
-                          size: int, tickAttribLast: TickAttribLast):
-        #print(" inside persistData")
-        contract = ContractSamples.SimpleFuture()
-        values = (1,contract.symbol, reqId, time, price, size)
-        # db = DBHelper()
-        self.insertData(values)
+    @iswrapper
+    def orderStatus(self, orderId: OrderId, status: str, filled: float,
+                    remaining: float, avgFillPrice: float, permId: int,
+                    parentId: int, lastFillPrice: float, clientId: int,
+                    whyHeld: str, mktCapPrice: float):
+        print("OrderStatus. ",
+              "OrderId:", orderId,
+              "Status:", status,
+              "Filled:", filled,
+              "Remaining:", remaining,
+              "AvgFillPrice:", avgFillPrice,
+              "PermId:", permId,
+              "ParentId:", parentId,
+              "LastFillPrice:", lastFillPrice,
+              "ClientId:", clientId,
+              "WhyHeld:", whyHeld,
+              "MktCapPrice:", mktCapPrice)
+
+    @iswrapper
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order,
+                  orderState: OrderState):
+        print("OpenOrder. ",
+              "OrderId:", orderId,
+              "Contract:", contract,
+              "Order:", order,
+              "OrderState:", orderState)
+
+    # @iswrapper
+    # def execDetails(self, reqId: int, contract: Contract, execution: Execution):
+    #     print("ExecDetails. ",
+    #           "Contract:", contract,
+    #           "Execution:", execution)
+    #     if self.execDetails == "BUY":
+    #         self.position += execution.cumQty
+    #     else:
+    #         self.position -= execution.cumQty
+
+    def checkAndSendOrder(self):
+        print(f"Received {self.strategy.signal}")
+        print(f"Last signal {self.last_signal}")
+
+        if self.strategy.signal == "NONE" or self.strategy.signal == self.last_signal:
+            print("Doing nothing")
+            self.last_signal = self.strategy.signal
+            return
+
+        if self.strategy.signal == "LONG":
+            self.sendOrder("BUY")
+        elif self.strategy.signal == "SHRT" and self.last_signal != "NONE":
+            self.sendOrder("SELL")
+        else:
+            print("Don't want to go naked short")
+
+        self.last_signal = self.strategy.signal
+
+    def sendOrder(self, action):
+        # if self.pending_order:
+        #     print(f"Want to send a {action} order. But, there is a pending order out there already, doing nothing")
+        #     return
+        order = Order()
+        order.action = action
+        order.totalQuantity = ORDER_QUANTITY
+        order.orderType = "MKT"
+        self.pending_order = True
+        self.placeOrder(self.nextOrderId(), eurusd_contract, order)
+        print(f"Sent a {order.action} order for {order.totalQuantity} shares")
+
 
 
 def main():

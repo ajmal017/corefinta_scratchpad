@@ -255,7 +255,7 @@ class TestApp(EWrapper, EClient):
         eurusd_contract.secType = 'FUT'
         eurusd_contract.exchange = 'GLOBEX'
         eurusd_contract.currency = 'USD'
-        eurusd_contract.lastTradeDateOrContractMonth = "202106"
+        eurusd_contract.lastTradeDateOrContractMonth = "202109"
 
         self.reqRealTimeBars(3001, eurusd_contract, 5, "TRADES", True, [])
         # ! [reqrealtimebars]
