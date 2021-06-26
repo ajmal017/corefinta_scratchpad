@@ -10,7 +10,7 @@ import yfinance as yf
 class StockSimulator:
 
     def __init__(self):
-        self.counter = 0
+        self.tick_count = 0
         self.stock_price = 0
         self.stock_list = []
         self.indicator = 0
@@ -22,17 +22,17 @@ class StockSimulator:
 
     # This is the simulator that executes all the methods
     def simulator(self):
-        num_candles_in_test_period = 10
+        num_ticks_in_test_period = 10
         # length_of_indicator = 4
         sleep_seconds = 2
         self.generate_yahoo_stock_px()
-        while self.counter < num_candles_in_test_period:
+        while self.tick_count < num_ticks_in_test_period:
             self.choose_yahoo_stock_px()
             self.stock_list_mgr()
             self.update_signal()
             self.print_statement()
             time.sleep(sleep_seconds)
-            self.counter += 1
+            self.tick_count += 1
 
     # Generate the stock price
     def generate_stock_price(self):
