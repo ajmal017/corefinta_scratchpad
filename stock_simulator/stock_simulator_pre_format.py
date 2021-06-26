@@ -18,7 +18,6 @@ class StockSimulator:
         self.signal = "NONE"
         self.yahoo_counter = 0
         self.df = pd.DataFrame()
-        self.wma_msg = None
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -30,7 +29,6 @@ class StockSimulator:
             self.choose_yahoo_stock_px()
             self.stock_list_mgr()
             self.update_signal()
-            self.print_statement()
             time.sleep(sleep_seconds)
             self.counter += 1
 
@@ -40,7 +38,7 @@ class StockSimulator:
         highest_stock_px = 10
         self.stock_price = random.randint(lowest_stock_px, highest_stock_px)
         stock_px_formatted = "{:.2f}".format(self.stock_price)
-        stock_price_msg = f'price: {stock_px_formatted}'
+        stock_price_msg = f'latest stock price: {stock_px_formatted}'
         print(stock_price_msg)
 
     def generate_yahoo_stock_px(self):
@@ -55,8 +53,8 @@ class StockSimulator:
     def choose_yahoo_stock_px(self):
         self.stock_price = self.df['Close'].iloc[self.yahoo_counter]
         stock_px_formatted = "{:.2f}".format(self.stock_price)
-        stock_price_msg = f'price: {stock_px_formatted}'
-        # print(stock_price_msg)
+        stock_price_msg = f'latest stock price: {stock_px_formatted}'
+        print(stock_price_msg)
         self.yahoo_counter += 1
 
     # Create a list that collects most recent indicator length of stock prices
@@ -66,7 +64,7 @@ class StockSimulator:
         if len(self.stock_list) > length_of_indicator:
             self.stock_list.pop(0)
         stock_list_msg = f'list of stock prices: {self.stock_list}'
-        # print(stock_list_msg)
+        print(stock_list_msg)
 
     # Calculate indicator value by converting list to a dataframe and using Finta package
     def finta_indicator(self):
@@ -81,8 +79,8 @@ class StockSimulator:
         self.indicator = recent_indicator_value
         self.wma_formatted = "{:.2f}".format(self.indicator)
         fin_ta_formatted = fin_ta_indicator.__name__
-        self.wma_msg = f'{fin_ta_formatted}: {self.wma_formatted}'
-        # print(self.wma_msg)
+        wma_msg = f'{fin_ta_formatted}: {self.wma_formatted}'
+        print(wma_msg)
 
     # Generate buy/sell signal based on trend pointing up or down on indicator
     def update_signal(self):
@@ -90,15 +88,10 @@ class StockSimulator:
         self.finta_indicator()
         if prev_indicator != 0:
             if self.indicator > prev_indicator:
-                self.signal = "LONG at " + str(self.wma_formatted) + ' or higher'
+                self.signal = "LONG at " + str(self.wma_formatted) + ' or higher\n'
             elif self.indicator < prev_indicator:
-                self.signal = "SHORT at " + str(self.wma_formatted) + ' or lower'
-        # print(self.signal)
-
-
-    def print_statement(self):
-        print(f'price: {self.stock_price} list:{self.stock_list} {self.wma_msg} {self.signal}')
-
+                self.signal = "SHORT at " + str(self.wma_formatted) + ' or lower\n'
+        print(self.signal)
 
 def main():
     app = StockSimulator()
