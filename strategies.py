@@ -35,7 +35,7 @@ class WMA:
         df['high'] = df['close']
         df['low'] = df['close']
         # df['sma'] = df['close'].rolling(window=self.periods).mean()
-        df['sma'] = TA.SMA(df, self.periods)
+        df['sma'] = TA.WMA(df, self.periods)
         self.wma = df['sma'].iloc[-1]
         self.dq.popleft()
 
