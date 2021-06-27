@@ -36,6 +36,7 @@ class StockSimulator:
         self.dq1 = deque()
         self.i = 0
         self.atr_periods = ATR_PERIODS
+        self.atr_value = 0
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -66,6 +67,7 @@ class StockSimulator:
             self.dq1.append(atr_value)
             self.dq.clear()
             self.dq.append(self.stock_price)
+            self.atr_value = sum(self.dq1) / len(self.dq1)
             if len(self.dq1) > self.atr_periods:
                 self.dq1.popleft()
 
@@ -139,7 +141,7 @@ class StockSimulator:
 
     def print_statement(self):
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list:{self.stock_list} {self.wma_msg} {self.signal}')
-        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
+        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_value} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
 
 def main():
     app = StockSimulator()
