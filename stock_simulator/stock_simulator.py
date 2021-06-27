@@ -12,6 +12,7 @@ from collections import deque
 NUM_PERIODS = 9
 TICKS_PER_CANDLE = 5
 TICKS_IN_TEST_PERIOD = 100
+ATR_PERIODS = 5
 
 class StockSimulator:
 
@@ -34,7 +35,7 @@ class StockSimulator:
         self.dq = deque()
         self.dq1 = deque()
         self.i = 0
-
+        self.atr_periods = ATR_PERIODS
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -65,6 +66,8 @@ class StockSimulator:
             self.dq1.append(atr_value)
             self.dq.clear()
             self.dq.append(self.stock_price)
+            if len(self.dq1) > self.atr_periods:
+                self.dq1.popleft()
 
     # Generate the stock price
     def generate_stock_price(self):
