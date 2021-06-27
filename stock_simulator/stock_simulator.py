@@ -58,13 +58,13 @@ class StockSimulator:
 
     def atr(self):
         self.dq.append(self.stock_price)
-        self.i += 1
-        max_value = max(self.dq)
-        min_value = min(self.dq)
         if len(self.dq) > self.ticks_per_candle:
+            max_value = max(self.dq)
+            min_value = min(self.dq)
             atr_value = max_value - min_value
             self.dq1.append(atr_value)
             self.dq.clear()
+            self.dq.append(self.stock_price)
 
     # Generate the stock price
     def generate_stock_price(self):
