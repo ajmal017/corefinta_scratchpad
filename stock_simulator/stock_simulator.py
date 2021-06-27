@@ -3,6 +3,9 @@ import random
 from finta import TA
 import pandas as pd
 import yfinance as yf
+from collections import deque
+
+# https://www.geeksforgeeks.org/dequeclear-dequeerase-c-stl/#:~:text=clear()%20removes%20all%20the,removed%20using%20clear()%20function.
 
 # creates a stock simulator, generates an indicator and buy/sell signals
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
@@ -28,18 +31,40 @@ class StockSimulator:
         self.ticks_in_test_period = TICKS_IN_TEST_PERIOD
         self.n = 0
         self.tick_number = 0
+        self.dq = deque()
+        self.dq1 = deque()
+        self.i = 0
+
 
     # This is the simulator that executes all the methods
     def simulator(self):
         sleep_seconds = 1
         self.generate_yahoo_stock_px()
+
         while self.tick_count < self.ticks_in_test_period:
             self.choose_yahoo_stock_px()
+            self.atr()
             self.print_statement()
             time.sleep(sleep_seconds)
             self.tick_count += 1
             if self.tick_count % self.ticks_per_candle == self.ticks_per_candle - 1:
                 self.update_signal()
+
+      # def atr(self):
+      #   self.dq.append(self.stock_price)
+      #   if self.i > self.ticks_per_candle - 1:
+      #       self.dq.popleft()
+      #   self.i += 1
+
+    def atr(self):
+        self.dq.append(self.stock_price)
+        self.i += 1
+        max_value = max(self.dq)
+        min_value = min(self.dq)
+        if len(self.dq) > self.ticks_per_candle:
+            atr_value = max_value - min_value
+            self.dq1.append(atr_value)
+            self.dq.clear()
 
     # Generate the stock price
     def generate_stock_price(self):
@@ -111,7 +136,7 @@ class StockSimulator:
 
     def print_statement(self):
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list:{self.stock_list} {self.wma_msg} {self.signal}')
-        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} {self.wma_msg} {self.signal}')
+        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
 
 def main():
     app = StockSimulator()
