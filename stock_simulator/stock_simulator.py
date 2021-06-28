@@ -96,6 +96,7 @@ class StockSimulator:
         data = yf.download(tickers=ticker, start='2001-01-04', end='2003-12-31')
         # data = yf.download(tickers = ticker, period = "5y")
         self.df = data
+        self.df = self.df.reset_index()
         # self.df.to_csv('stock_px_sample.csv')
 
     def choose_yahoo_stock_px(self):
@@ -103,7 +104,7 @@ class StockSimulator:
         self.tick_number = str(self.tick_count % self.ticks_per_candle + 1).zfill(3)
         self.stock_price = self.df['Close'].iloc[self.yahoo_counter]
         stock_px_formatted = "{:.2f}".format(self.stock_price)
-        # self.date = self.df['Date'].iloc[self.yahoo_counter]
+        self.date = self.df['Date'].iloc[self.yahoo_counter]
         # stock_price_msg = f'price: {stock_px_formatted}'
         # print(stock_price_msg)
         self.yahoo_counter += 1
@@ -175,7 +176,7 @@ class StockSimulator:
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list: {self.stock_list} {self.wma_msg}')
-        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} Entry_Px: {self.pnl} Unreal: {self.unreal} {self.signal}')
+        print(f'Candle:{self.candle_count} Tick: {self.tick_number} date: {self.date} price: {self.stock_price} Entry_Px: {self.pnl} Unreal: {self.unreal} {self.signal}')
 
 def main():
     app = StockSimulator()
