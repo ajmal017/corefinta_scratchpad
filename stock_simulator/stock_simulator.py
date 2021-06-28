@@ -10,7 +10,7 @@ from collections import deque
 # creates a stock simulator, generates an indicator and buy/sell signals
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
 NUM_PERIODS = 9
-TICKS_PER_CANDLE = 5
+TICKS_PER_CANDLE = 2
 TICKS_IN_TEST_PERIOD = 400
 ATR_PERIODS = 21
 
