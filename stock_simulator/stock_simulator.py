@@ -9,8 +9,8 @@ from collections import deque
 
 # creates a stock simulator, generates an indicator and buy/sell signals
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
-NUM_PERIODS = 5
-TICKS_PER_CANDLE = 2
+NUM_PERIODS = 9
+TICKS_PER_CANDLE = 5
 TICKS_IN_TEST_PERIOD = 400
 ATR_PERIODS = 21
 
@@ -40,6 +40,7 @@ class StockSimulator:
         self.atr_formatted = 0
         self.pnl = 0
         self.last_signal = 'NONE'
+        self.unreal = 0
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -147,14 +148,19 @@ class StockSimulator:
         # print(self.signal)
 
     def checkAndSendOrder(self):
+
         if self.signal == 'NONE' or self.signal == self.last_signal:
             self.pnl = self.pnl
-            self.last_signal = self.signal
+            if self.signal == 'LONG':
+                self.unreal = self.pnl + self.stock_price
+            else:
+                self.unreal = self.pnl - self.stock_price
             return
         if self.signal == 'LONG':
-            self.pnl = self.pnl - self.stock_price
+            self.pnl = - self.stock_price
+
         elif self.signal == 'SHORT' and self.last_signal != 'NONE':
-            self.pnl = self.pnl + self.stock_price
+            self.pnl = self.stock_price
         else:
             self.pnl = self.pnl
 
@@ -165,7 +171,7 @@ class StockSimulator:
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list: {self.stock_list} {self.wma_msg}')
-        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} PnL: {self.pnl} {self.signal}')
+        print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} Entry_Px: {self.pnl} Unreal: {self.unreal} {self.signal}')
 
 def main():
     app = StockSimulator()
