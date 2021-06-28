@@ -10,13 +10,15 @@ from collections import deque
 # creates a stock simulator, generates an indicator and buy/sell signals
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
 NUM_PERIODS = 9
-TICKS_PER_CANDLE = 2
-TICKS_IN_TEST_PERIOD = 400
+TICKS_PER_CANDLE = 5
+TICKS_IN_TEST_PERIOD = 30
 ATR_PERIODS = 21
+SLEEP_SECONDS = 0
 
 class StockSimulator:
 
     def __init__(self):
+        self.date = None
         self.tick_count = 0
         self.stock_price = 0
         self.stock_list = []
@@ -41,10 +43,11 @@ class StockSimulator:
         self.pnl = 0
         self.last_signal = 'NONE'
         self.unreal = 0
+        self.sleep_seconds = SLEEP_SECONDS
 
     # This is the simulator that executes all the methods
     def simulator(self):
-        sleep_seconds = 1
+        self.sleep_seconds = 1
         self.generate_yahoo_stock_px()
 
         while self.tick_count < self.ticks_in_test_period:
@@ -52,7 +55,7 @@ class StockSimulator:
             self.atr()
             self.checkAndSendOrder()
             self.print_statement()
-            time.sleep(sleep_seconds)
+            # time.sleep(self.sleep_seconds)
             self.tick_count += 1
             if self.tick_count % self.ticks_per_candle == self.ticks_per_candle - 1:
                 self.update_signal()
@@ -90,17 +93,18 @@ class StockSimulator:
         # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
         # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
         ticker = "NQ=F"
-        # data = yf.download(tickers=ticker, start='2010-01-04', end='2018-12-31')
-        data = yf.download(tickers = ticker, period = "2y")
+        data = yf.download(tickers=ticker, start='2001-01-04', end='2003-12-31')
+        # data = yf.download(tickers = ticker, period = "5y")
         self.df = data
-        self.df.to_csv('stock_px_sample.csv')
+        # self.df.to_csv('stock_px_sample.csv')
 
     def choose_yahoo_stock_px(self):
         self.candle_count = str(self.tick_count // self.ticks_per_candle + 1).zfill(3)
         self.tick_number = str(self.tick_count % self.ticks_per_candle + 1).zfill(3)
         self.stock_price = self.df['Close'].iloc[self.yahoo_counter]
         stock_px_formatted = "{:.2f}".format(self.stock_price)
-        stock_price_msg = f'price: {stock_px_formatted}'
+        # self.date = self.df['Date'].iloc[self.yahoo_counter]
+        # stock_price_msg = f'price: {stock_px_formatted}'
         # print(stock_price_msg)
         self.yahoo_counter += 1
 
