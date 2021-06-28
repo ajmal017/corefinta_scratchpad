@@ -9,7 +9,7 @@ from collections import deque
 
 # creates a stock simulator, generates an indicator and buy/sell signals
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
-NUM_PERIODS = 5
+NUM_PERIODS = 9
 TICKS_PER_CANDLE = 2
 TICKS_IN_TEST_PERIOD = 400
 ATR_PERIODS = 21
@@ -39,7 +39,6 @@ class StockSimulator:
         self.atr_value = 0
         self.atr_formatted = 0
         self.pnl = 0
-        self.last_signal = 'NONE'
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -49,7 +48,6 @@ class StockSimulator:
         while self.tick_count < self.ticks_in_test_period:
             self.choose_yahoo_stock_px()
             self.atr()
-            self.checkAndSendOrder()
             self.print_statement()
             time.sleep(sleep_seconds)
             self.tick_count += 1
@@ -139,26 +137,10 @@ class StockSimulator:
         self.finta_indicator()
         if prev_indicator != 0:
             if self.indicator > prev_indicator:
-                self.signal = 'LONG'
-                # self.signal = "LONG at " + str(self.wma_formatted) + ' or higher'
+                self.signal = "LONG at " + str(self.wma_formatted) + ' or higher'
             elif self.indicator < prev_indicator:
-                self.signal = 'SHORT'
-                # self.signal = "SHORT at " + str(self.wma_formatted) + ' or lower'
+                self.signal = "SHORT at " + str(self.wma_formatted) + ' or lower'
         # print(self.signal)
-
-    def checkAndSendOrder(self):
-        if self.signal == 'NONE' or self.signal == self.last_signal:
-            self.pnl = self.pnl
-            self.last_signal = self.signal
-            return
-        if self.signal == 'LONG':
-            self.pnl = self.pnl - self.stock_price
-        elif self.signal == 'SHORT' and self.last_signal != 'NONE':
-            self.pnl = self.pnl + self.stock_price
-        else:
-            self.pnl = self.pnl
-
-        self.last_signal = self.signal
 
     def print_statement(self):
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list:{self.stock_list} {self.wma_msg} {self.signal}')
