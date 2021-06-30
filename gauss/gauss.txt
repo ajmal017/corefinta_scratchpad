@@ -10,7 +10,7 @@ input color4 = 255;
 input color5 = 0;
 input color6 = 0;
 
-input period3 = 16.5;
+input period3 = 15.5;
 
 input gauss1 = no;
 input gauss2 = no;
@@ -116,7 +116,7 @@ shortatrgaussa.SetLineWeight(atrlineweight);
 
 #ATR 2
 
-input atrlengthgauss2 = 5;
+input atrlengthgauss2 = 21;
 
 def atrgauss2 = ExpAverage(high - low, atrlengthgauss);
 
@@ -138,7 +138,7 @@ shortatrgauss2a.SetLineWeight(atrlineweight);
 
 #ATR 3
 
-input atrlengthgauss3 = 5;
+input atrlengthgauss3 = 21;
 
 def atrgauss3 = ExpAverage(high - low, atrlengthgauss);
 
