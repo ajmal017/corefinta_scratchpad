@@ -116,7 +116,7 @@ shortatrgaussa.SetLineWeight(atrlineweight);
 
 #ATR 2
 
-input atrlengthgauss2 = 21;
+input atrlengthgauss2 = 5;
 
 def atrgauss2 = ExpAverage(high - low, atrlengthgauss);
 
@@ -138,7 +138,7 @@ shortatrgauss2a.SetLineWeight(atrlineweight);
 
 #ATR 3
 
-input atrlengthgauss3 = 21;
+input atrlengthgauss3 = 5;
 
 def atrgauss3 = ExpAverage(high - low, atrlengthgauss);
 
@@ -231,3 +231,214 @@ AddLabel(long3 and labels, " " + Round (third_longatrgaussa, tickdecimal) + " " 
 AddLabel(long3 and labels, " " + Round (third_longatrgauss2a, tickdecimal) + " " , Color.GREEN);
 AddLabel(long3 and labels, " " + Round (third_longatrgauss3, tickdecimal) + " " , Color.GREEN);
 AddLabel(long3 and labels, " " + Round (third_longatrgauss3a, tickdecimal) + " " , Color.GREEN);
+
+
+#Extensions
+
+input ExtendRight = 8;
+
+
+input n = 2;
+
+
+def Longline = if short3 then Double.NaN else if long3 and GF3[1] > GF3[n]  then GF3 else Longline[1];
+def Shortline = if long3 then Double.NaN else if short3  and GF3[1] < GF3[n]  then GF3 else Shortline[1];
+
+
+def lbn = if !IsNaN(close) and IsNaN(close[-1]) then (BarNumber() + extendRight) else Double.NaN;
+
+##### Nube's Changes
+
+def longLineCount = if !IsNaN(longLine)
+                    then 0
+                    else longLineCount[1] + 1;
+
+def shortLineCount = if !IsNaN(shortLine)
+                     then 0
+                     else shortLineCount[1] + 1;
+
+rec longZText = if !IsNaN(Longline)
+                then GF3
+                else if Between(longLineCount, 0, extendRight)
+                     then longZText[1] + (longZText[1] - longZText[2])
+                     else Double.NaN;
+
+rec shortZText = if !IsNaN(Shortline)
+                 then GF3
+                 else if Between(shortLineCount, 0, extendRight)
+                      then shortZText[1] + (shortZText[1] - shortZText[2])
+                      else Double.NaN;
+
+input showdiagonals = no;
+
+plot longZTextplot = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longZText
+                     else Double.NaN;
+
+plot shortZTextplot = if shortlineCount crosses below 1 then Double.NaN else
+                      if (showdiagonals)
+                      and BarNumber() <= HighestAll(lbn)
+                      then shortZText
+                      else Double.NaN;
+
+# ATR Extensions
+
+# Long ATR Extensions
+
+rec longATR3 = if !IsNaN(Longline)
+                then longATRgauss3
+                else if Between(longLineCount, 0, extendRight)
+                     then longATR3[1] + (longATR3[1] - longATR3[2])
+                     else Double.NaN;
+
+plot longATRplot3 = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATR3
+                     else Double.NaN;
+
+rec longATR2 = if !IsNaN(Longline)
+                then longATRgauss2
+                else if Between(longLineCount, 0, extendRight)
+                     then longATR2[1] + (longATR2[1] - longATR2[2])
+                     else Double.NaN;
+
+plot longATRplot2 = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATR2
+                     else Double.NaN;
+
+rec longATR = if !IsNaN(Longline)
+                then longATRgauss
+                else if Between(longLineCount, 0, extendRight)
+                     then longATR[1] + (longATR[1] - longATR[2])
+                     else Double.NaN;
+
+plot longATRplot = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATR
+                     else Double.NaN;
+
+rec longATRa = if !IsNaN(Longline)
+                then longATRgaussa
+                else if Between(longLineCount, 0, extendRight)
+                     then longATRa[1] + (longATRa[1] - longATRa[2])
+                     else Double.NaN;
+
+plot longATRplota = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATRa
+                     else Double.NaN;
+
+
+rec longATR2a = if !IsNaN(Longline)
+                then longATRgauss2a
+                else if Between(longLineCount, 0, extendRight)
+                     then longATR2a[1] + (longATR2a[1] - longATR2a[2])
+                     else Double.NaN;
+
+plot longATRplot2a = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATR2a
+                     else Double.NaN;
+
+rec longATR3a = if !IsNaN(Longline)
+                then longATRgauss3a
+                else if Between(longLineCount, 0, extendRight)
+                     then longATR3a[1] + (longATR3a[1] - longATR3a[2])
+                     else Double.NaN;
+
+plot longATRplot3a = if longLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then longATR3a
+                     else Double.NaN;
+
+# Short ATR Extensions
+
+rec shortATR3 = if !IsNaN(Shortline)
+                then shortATRgauss3
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATR3[1] + (shortATR3[1] - shortATR3[2])
+                     else Double.NaN;
+
+plot shortATRplot3 = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATR3
+                     else Double.NaN;
+
+rec shortATR2 = if !IsNaN(Shortline)
+                then shortATRgauss2
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATR2[1] + (shortATR2[1] - shortATR2[2])
+                     else Double.NaN;
+
+plot shortATRplot2 = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATR2
+                     else Double.NaN;
+
+rec shortATR = if !IsNaN(Shortline)
+                then shortATRgauss
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATR[1] + (shortATR[1] - shortATR[2])
+                     else Double.NaN;
+
+plot shortATRplot = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATR
+                     else Double.NaN;
+
+rec shortATR2a = if !IsNaN(Shortline)
+                then shortATRgauss2a
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATR2a[1] + (shortATR2a[1] - shortATR2a[2])
+                     else Double.NaN;
+
+plot shortATRplot2a = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATR2a
+                     else Double.NaN;
+
+rec shortATR3a = if !IsNaN(Shortline)
+                then shortATRgauss3a
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATR3a[1] + (shortATR3a[1] - shortATR3a[2])
+                     else Double.NaN;
+
+plot shortATRplot3a = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATR3a
+                     else Double.NaN;
+
+rec shortATRa = if !IsNaN(Shortline)
+                then shortATRgaussa
+                else if Between(shortLineCount, 0, extendRight)
+                     then shortATRa[1] + (shortATRa[1] - shortATRa[2])
+                     else Double.NaN;
+
+plot shortATRplota = if shortLineCount crosses below 1 then Double.NaN else
+                     if (showdiagonals)
+                     and BarNumber() <= HighestAll(lbn)
+                     then shortATRa
+                     else Double.NaN;
+
+
+##### End of Nube's Changes
+
+longZTextplot.AssignValueColor(if longZTextplot > longZTextplot[1] then createColor(0,255,255) else CreateColor(0,102,255));
+longZTextplot.SetLineWeight(1);
+
+shortZTextplot.AssignValueColor(if shortZTextplot > shortZTextplot[1] then CreateColor(0,255,255) else createColor(0,102,255));
+shortZTextplot.SetLineWeight(1);
