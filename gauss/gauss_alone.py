@@ -23,7 +23,7 @@ df2 = pd.DataFrame(data)
 df2 = df2.reset_index()
 
 # Gauss
-num_periods_gauss = 16.5
+num_periods_gauss = 15.5
 df2['symbol'] = 2 * math.pi / num_periods_gauss
 df2['beta'] = (1 - np.cos(df2['symbol']) ) / ((1.414)**(0.5) - 1)
 df2['alpha'] = - df2['beta'] + (df2['beta']**2 + df2['beta'] * 2)**2
