@@ -11,7 +11,7 @@ from collections import deque
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
 NUM_PERIODS = 9
 TICKS_PER_CANDLE = 5
-TICKS_IN_TEST_PERIOD = 30
+TICKS_IN_TEST_PERIOD = 187
 ATR_PERIODS = 21
 SLEEP_SECONDS = 0
 
@@ -44,6 +44,7 @@ class StockSimulator:
         self.last_signal = 'NONE'
         self.unreal = 0
         self.sleep_seconds = SLEEP_SECONDS
+        self.target = 0
 
     # This is the simulator that executes all the methods
     def simulator(self):
@@ -54,6 +55,7 @@ class StockSimulator:
             self.choose_yahoo_stock_px()
             self.atr()
             self.checkAndSendOrder()
+            self.forecasted_values()
             self.print_statement()
             # time.sleep(self.sleep_seconds)
             self.tick_count += 1
@@ -93,8 +95,8 @@ class StockSimulator:
         # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
         # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
         ticker = "NQ=F"
-        data = yf.download(tickers=ticker, start='2001-01-04', end='2003-12-31')
-        # data = yf.download(tickers = ticker, period = "5y")
+        # data = yf.download(tickers=ticker, start='2001-01-04', end='2003-12-31')
+        data = yf.download(tickers = ticker, period = "9mo")
         self.df = data
         self.df = self.df.reset_index()
         # self.df.to_csv('stock_px_sample.csv')
@@ -171,13 +173,19 @@ class StockSimulator:
 
         self.last_signal = self.signal
 
+    def forecasted_values(self):
+        if self.signal == 'LONG':
+            self.target = "{:.2f}".format(self.indicator + self.atr_value)
+        else:
+            self.target = "{:.2f}".format(self.indicator - self.atr_value)
+
     def print_statement(self):
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list:{self.stock_list} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} ATR: {self.dq} ATRL: {self.dq1} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} ATR Val: {self.atr_formatted} {self.wma_msg} {self.signal}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} price: {self.stock_price} list: {self.stock_list} {self.wma_msg}')
         # print(f'Candle:{self.candle_count} Tick: {self.tick_number} date: {self.date} price: {self.stock_price} Entry_Px: {self.pnl} Unreal: {self.unreal} {self.signal}')
-        print(f'Candle:{self.candle_count} Tick: {self.tick_number} date: {self.date} price: {self.stock_price} Entry_Px: {self.pnl} Unreal: {self.unreal} {self.signal}')
+        print(f'date: {self.date} price: {self.stock_price} {self.wma_msg} ATR: {self.atr_formatted} {self.signal} target:{self.target}')
 
 def main():
     app = StockSimulator()
