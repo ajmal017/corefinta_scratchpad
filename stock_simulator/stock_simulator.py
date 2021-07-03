@@ -55,7 +55,7 @@ class StockSimulator:
             self.atr()
             self.checkAndSendOrder()
             self.print_statement()
-            # time.sleep(self.sleep_seconds)
+            time.sleep(self.sleep_seconds)
             self.tick_count += 1
             if self.tick_count % self.ticks_per_candle == self.ticks_per_candle - 1:
                 self.update_signal()
