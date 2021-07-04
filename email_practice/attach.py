@@ -16,7 +16,7 @@ receiver_email = "crudedecay@gmail.com"
 subj = "testing attachments"
 #txtwords = input('what do you want to say?: ')
 body = "This is an email with attachment sent from Python"
-password = 'suite203!'
+password = 'xxx'
 
 message = MIMEMultipart()
 message["Subject"] = subj

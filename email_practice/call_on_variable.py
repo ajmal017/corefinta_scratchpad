@@ -17,7 +17,7 @@ class EmailYahoo:
         smtp_server = "smtp.gmail.com"
         sender_email = "jmzakatees@gmail.com"
         receiver_email = 'crudedecay@gmail.com'
-        password = 'suite203!'
+        password = 'xxx'
 
         message = f'''\
         From: Javed Siddique {sender_email}

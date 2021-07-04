@@ -9,7 +9,7 @@ PATH_TO_CSV_FILE = 'select_to_end.csv'
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 465
 SMTP_USERNAME = 'jmzakatees@gmail.com'
-SMTP_PASSWORD = 'suite203!'
+SMTP_PASSWORD = 'xxx'
 
 def send_mail():
     # Create a multipart message

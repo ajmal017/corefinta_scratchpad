@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 
 SENDER_EMAIL = "jmzakatees@gmail.com"
-APP_PASSWORD = "suite203!"
+APP_PASSWORD = "xxx"
 recipient_email = 'crudedecay@gmail.com'
 excel_file = 'select_to_end'
 subject = 'blank'

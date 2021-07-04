@@ -17,8 +17,8 @@ from datetime import datetime
 ticker = "NQ=F"
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
-data = yf.download(tickers = ticker, period = "2y", interval = '1d')
-# data = yf.download(tickers = ticker, start='2000-01-04', end='2005-12-31', interval = '1d')
+#data = yf.download(tickers = ticker, period = "1y", interval = '1d')
+data = yf.download(tickers = ticker, start='2020-01-04', end='2021-07-02', interval = '1d')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
