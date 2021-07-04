@@ -1,4 +1,4 @@
-import math
+from datetime import datetime
 import numpy as np
 from finta import TA
 import yfinance as yf
@@ -18,7 +18,10 @@ ticker = "NQ=F"
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 #data = yf.download(tickers = ticker, period = "1y", interval = '1d')
-data = yf.download(tickers = ticker, start='2020-01-04', end='2021-07-02', interval = '1d')
+#todays_date = datetime.today().strftime('%Y-%m-%d')
+#print(todays_date)
+#data = yf.download(tickers = ticker, start='2020-01-04', end=todays_date, interval = '1d')
+data = yf.download(tickers = ticker, start='2020-01-04', end='2020-07-02', interval = '1d')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -164,7 +167,7 @@ while counter1 < bars_out:
 # counter += 1
 
 
-print(df2.loc[len(df2) - bars_out - 1, 'ATR'])
+# print(df2.loc[len(df2) - bars_out - 1, 'ATR'])
 # append dataframe
 # https://stackoverflow.com/questions/53304656/difference-between-dates-between-corresponding-rows-in-pandas-dataframe
 # https://www.geeksforgeeks.org/how-to-add-one-row-in-an-existing-pandas-dataframe/
@@ -174,7 +177,7 @@ print(df2.loc[len(df2) - bars_out - 1, 'ATR'])
 # https://stackoverflow.com/questions/31674557/how-to-append-rows-in-a-pandas-dataframe-in-a-for-loop
 
 recent_price = df2['close'].iloc[-bars_out-1]
-print(recent_price)
+# print(recent_price)
 df2['recent_px'] = recent_price
 df2['dist_to_upper'] = df2['upper_band'] / df2['recent_px'] - 1
 df2['dist_to_line'] = df2['Line'] / df2['recent_px'] - 1
@@ -182,12 +185,13 @@ df2['dist_to_line'] = df2['Line'] / df2['recent_px'] - 1
 etf_data = yf.download(tickers = 'TQQQ', period = '5d', interval = '1d')
 etf_df = pd.DataFrame(etf_data)
 recent_etf = etf_df['Close'].iloc[-1]
-print(recent_etf)
+# print(recent_etf)
 df2['etf'] = recent_etf
 df2['etf_upper'] = df2['etf']*(1 + df2['dist_to_upper'])
 df2['etf_line'] = df2['etf']*(1 + df2['dist_to_line'])
 
-selected_range = df2[['date', 'upper_band', 'lower_band', 'Line']].tail(21)
+# selected_range = df2[['date', 'upper_band', 'lower_band', 'Line']].tail(21)
+selected_range = df2[['date', 'etf', 'etf_line', 'etf_upper']].tail(21)
 print(selected_range)
 selected_range.to_csv('selected.csv')
 #print(df2[['date', 'upper_band', 'lower_band', 'upper_band_1','lower_band_1', 'Line']].tail(25))
