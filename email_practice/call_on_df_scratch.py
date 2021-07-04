@@ -14,13 +14,12 @@ df = pd.DataFrame(data)
 df = df.reset_index()
 selected_date = df['Date'] == '2021-06-21'
 selected_row = df.loc[selected_date]
-# selected_index = df.index[selected_date]
 selected_index = int(df[selected_date].index[0])
 
 print(selected_row)
 print(selected_index)
 select_to_end = df[selected_index:len(df)]
 print(select_to_end)
-# print(df)
+select_to_end.to_csv('select_to_end.csv')
 
 # print(df[['Date', 'Close']].tail(3))
