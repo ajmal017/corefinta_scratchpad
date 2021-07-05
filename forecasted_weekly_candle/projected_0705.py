@@ -1,3 +1,4 @@
+from datetime import datetime
 import numpy as np
 from finta import TA
 import yfinance as yf
@@ -6,7 +7,7 @@ import plotly.express as px
 
 import pandas as pd
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 """ do WMA 9 (all ATR w/i 1 band) 21 or 34 (smooth trend) for daily or 9 for weekly n = 5 ATR = 21"""
@@ -16,12 +17,11 @@ from datetime import datetime, timedelta
 ticker = "NQ=F"
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
-data = yf.download(tickers = ticker, period = "1y", interval = '1d')
+#data = yf.download(tickers = ticker, period = "1y", interval = '1d')
 #todays_date = datetime.today().strftime('%Y-%m-%d')
 #print(todays_date)
 #data = yf.download(tickers = ticker, start='2020-01-04', end=todays_date, interval = '1d')
-#todays_date = '2021-07-02'
-#data = yf.download(tickers = ticker, start='2020-01-04', end=todays_date, interval = '1d')
+data = yf.download(tickers = ticker, start='2020-01-04', end='2021-07-02', interval = '1d')
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -41,7 +41,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 2
+n = 5
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -135,25 +135,12 @@ line_diff = df2.loc[len(df2)-1, 'change_SMA']
 # upper_band_1_proj = df2.loc[len(df2)-1, 'upper_band_1'] + upper_band_1_diff
 # df2.loc[len(df2), 'upper_band_1'] = upper_band_1_proj
 
-# https://stackoverflow.com/questions/12691551/add-n-business-days-to-a-given-date-ignoring-holidays-and-weekends-in-python
-
-def date_by_adding_business_days(from_date, add_days):
-    business_days_to_add = add_days
-    current_date = from_date
-    while business_days_to_add > 0:
-        current_date += timedelta(days=1)
-        weekday = current_date.weekday()
-        if weekday >= 5: # sunday = 6
-            continue
-        business_days_to_add -= 1
-    return current_date
-
 counter = 0
 bars_out = 20
 while counter < bars_out:
 
     df2.loc[len(df2), 'Line'] = df2.loc[len(df2) - 1, 'Line'] * line_diff
-    df2.loc[len(df2) - 1, 'date'] = date_by_adding_business_days(df2.loc[len(df2) - 2, 'date'], n)
+    df2.loc[len(df2) - 1, 'date'] = df2.loc[len(df2) - 2, 'date'] + date_diff
     counter += 1
 
 ATR = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier

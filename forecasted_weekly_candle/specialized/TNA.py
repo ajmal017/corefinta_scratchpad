@@ -13,7 +13,8 @@ from datetime import datetime, timedelta
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 """ WMA9 for 2 day bars with ATR 21 """
 
-ticker = "NQ=F"
+ticker = "RTY=F"
+three_x = 'TNA'
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 data = yf.download(tickers = ticker, period = "1y", interval = '1d')
@@ -195,7 +196,7 @@ df2['recent_px'] = recent_price
 df2['dist_to_upper'] = df2['upper_band'] / df2['recent_px'] - 1
 df2['dist_to_line'] = df2['Line'] / df2['recent_px'] - 1
 
-etf_data = yf.download(tickers = 'TQQQ', period = '5d', interval = '1d')
+etf_data = yf.download(tickers = three_x, period = '5d', interval = '1d')
 etf_df = pd.DataFrame(etf_data)
 recent_etf = etf_df['Close'].iloc[-1]
 # print(recent_etf)
