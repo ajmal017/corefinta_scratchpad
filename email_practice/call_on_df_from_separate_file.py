@@ -19,7 +19,10 @@ class EmailYahoo:
         smtp_server = "smtp.gmail.com"
         sender_email = "jmzakatees@gmail.com"
         receiver_email = 'crudedecay@gmail.com'
-        password = 'xxx'
+        with open(r"/Users/jsidd/Documents/Quant Library/test.txt",
+                  "r") as file1:
+            passwd = file1.read()
+        password = passwd
 
         message = f'''\
         From: Javed Siddique {sender_email}
