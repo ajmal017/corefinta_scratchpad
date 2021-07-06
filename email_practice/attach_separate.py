@@ -9,6 +9,8 @@ import df_class
 
 class EmailYahoo:
 
+
+
     def __init__(self):
         self.counter = 0
         self.buy_msg = "Buy today"
