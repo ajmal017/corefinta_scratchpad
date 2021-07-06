@@ -10,11 +10,8 @@ fname = 'select_to_end.csv'
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "jmzakatees@gmail.com"  # Enter your address
-#receiver_email = input("What is the recipient email address?: ")  # Enter receiver address
 receiver_email = "crudedecay@gmail.com"
-#subj = input("What is the subject of the email?: ")
 subj = "testing attachments"
-#txtwords = input('what do you want to say?: ')
 body = "This is an email with attachment sent from Python"
 password = 'xxx'
 
@@ -23,7 +20,6 @@ message["Subject"] = subj
 message["From"] = sender_email
 message["To"] = receiver_email
 
-# filename = fname  # In same directory as script
 
 # Add attachment to message and convert message to string
 with open(fname, 'rb') as file:
