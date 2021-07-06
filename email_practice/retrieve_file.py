@@ -7,3 +7,8 @@
 with open(r"/Users/jsidd/PycharmProjects/javed-raoon/corefinta_scratchpad/email_practice/test.txt", "r") as file1:
     FileContent = file1.read()
     print(FileContent)
+
+with open(r"/Users/jsidd/Documents/Quant Library/test.txt", "r") as file1:
+    passwd = file1.read()
+
+password = passwd
