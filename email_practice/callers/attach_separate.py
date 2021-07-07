@@ -21,8 +21,11 @@ class EmailYahoo:
         port = 465  # For SSL
         smtp_server = "smtp.gmail.com"
         sender_email = "jmzakatees@gmail.com"  # Enter your address
-        receiver_email = "crudedecay@gmail.com"
-        subj = "testing attachments"
+        with open(r"/Users/jsidd/Documents/Quant Library/receiver_email.txt",
+                  "r") as file2:
+            receive_email = file2.read()
+        receiver_email = receive_email
+        subj = "Forecasted values for TQQQ based Gauss and ATR bands"
         body = "This is an email with attachment sent from Python"
 
         with open(r"/Users/jsidd/Documents/Quant Library/test.txt",

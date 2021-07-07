@@ -41,7 +41,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 5
+n = 2
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -204,7 +204,7 @@ df2['etf_upper'] = df2['etf']*(1 + df2['dist_to_upper']*3)
 df2['etf_line'] = df2['etf']*(1 + df2['dist_to_line']*3)
 
 # selected_range = df2[['date', 'upper_band', 'lower_band', 'Line']].tail(21)
-selected_range = df2[['date', 'upper_band', 'Line', 'etf', 'etf_line', 'etf_upper']].tail(21)
+selected_range = df2[['date', 'etf', 'etf_line', 'etf_upper']].tail(21)
 print(selected_range)
 selected_range.to_csv('selected.csv')
 #print(df2[['date', 'upper_band', 'lower_band', 'upper_band_1','lower_band_1', 'Line']].tail(25))
