@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-# import seaborn as sn
+import seaborn as sn
 import matplotlib.pyplot as plt
 
 # https://datatofish.com/logistic-regression-python/
@@ -39,10 +39,17 @@ y_pred=logistic_regression.predict(X_test)
 
 print (X_test) #test dataset
 print (y_pred) #predicted values
+
+# get the coefficients:
+
 print(model.intercept_)
 print(model.coef_)
 
+# confusion matrix
 
+confusion_matrix = pd.crosstab(y_test, y_pred, rownames=['Actual'], colnames=['Predicted'])
+sn.heatmap(confusion_matrix, annot=True)
 
-
+print('Accuracy: ',metrics.accuracy_score(y_test, y_pred))
+plt.show()
 
