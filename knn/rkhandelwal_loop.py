@@ -60,9 +60,9 @@ df_results['accuracy'] = accuracy_list
 # print(dataset_1)
 # dataset_1.to_csv('dataset1.csv')
 i = 0
-test_data = [[2,1,3,1,0,2],[1,0,0,0,0,1],[1,0,0,1,1,2]]
+test_data = [[3,3,0,0,0,2],[1,0,0,0,0,1],[1,0,0,1,1,2]]
 y_pred_test_data = classifier.predict(test_data)
-# print(y_pred_test_data)
+print(y_pred_test_data)
 
 df_test = pd.DataFrame()
 df_test['inputs'] = test_data
@@ -74,7 +74,7 @@ df_array = dataset_1[['Buying_1', 'Maint_1', 'doors_1', 'persons_1', 'lug_boot_1
 # print(df_array)
 
 y_pred_test_data_array = classifier.predict(df_array)
-print(y_pred_test_data_array)
+# print(y_pred_test_data_array)
 
 # k = 5
 #
