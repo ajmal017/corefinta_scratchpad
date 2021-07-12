@@ -1,0 +1,15 @@
+(MainThread) 210620_21:09:12.220 ERROR wrapper.py:56 ERROR -1 2104 Market data farm connection is OK:usfuture
+(MainThread) 210620_21:09:12.220 ERROR wrapper.py:56 ERROR -1 2104 Market data farm connection is OK:usfarm
+(MainThread) 210620_21:09:12.220 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:euhmds
+(MainThread) 210620_21:09:12.221 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:cashhmds
+(MainThread) 210620_21:09:12.221 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:fundfarm
+(MainThread) 210620_21:09:12.221 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:ushmds
+(MainThread) 210620_21:09:12.225 ERROR wrapper.py:56 ERROR -1 2158 Sec-def data farm connection is OK:secdefil
+(MainThread) 210620_21:09:50.636 ERROR wrapper.py:56 ERROR 53 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:09:50.637 ERROR wrapper.py:56 ERROR 53 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:10:07.636 ERROR wrapper.py:56 ERROR 54 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:10:07.637 ERROR wrapper.py:56 ERROR 54 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:10:46.494 ERROR wrapper.py:56 ERROR 55 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:10:46.494 ERROR wrapper.py:56 ERROR 55 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:10:55.981 ERROR wrapper.py:56 ERROR 56 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:10:55.983 ERROR wrapper.py:56 ERROR 56 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.

@@ -1,0 +1,27 @@
+(MainThread) 210620_21:30:14.391 ERROR wrapper.py:56 ERROR -1 2104 Market data farm connection is OK:usfuture
+(MainThread) 210620_21:30:14.391 ERROR wrapper.py:56 ERROR -1 2104 Market data farm connection is OK:usfarm
+(MainThread) 210620_21:30:14.392 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:euhmds
+(MainThread) 210620_21:30:14.392 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:cashhmds
+(MainThread) 210620_21:30:14.392 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:fundfarm
+(MainThread) 210620_21:30:14.393 ERROR wrapper.py:56 ERROR -1 2106 HMDS data farm connection is OK:ushmds
+(MainThread) 210620_21:30:14.396 ERROR wrapper.py:56 ERROR -1 2158 Sec-def data farm connection is OK:secdefil
+(MainThread) 210620_21:30:19.076 ERROR wrapper.py:56 ERROR 82 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:19.077 ERROR wrapper.py:56 ERROR 82 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:31.056 ERROR wrapper.py:56 ERROR 83 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:31.058 ERROR wrapper.py:56 ERROR 83 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:41.256 ERROR wrapper.py:56 ERROR 84 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:41.258 ERROR wrapper.py:56 ERROR 84 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:50.445 ERROR wrapper.py:56 ERROR 85 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:50.446 ERROR wrapper.py:56 ERROR 85 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:50.447 ERROR wrapper.py:56 ERROR 86 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:50.448 ERROR wrapper.py:56 ERROR 86 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:53.809 ERROR wrapper.py:56 ERROR 87 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:53.810 ERROR wrapper.py:56 ERROR 87 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:30:56.485 ERROR wrapper.py:56 ERROR 88 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:30:56.486 ERROR wrapper.py:56 ERROR 88 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:31:02.588 ERROR wrapper.py:56 ERROR 89 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:31:02.589 ERROR wrapper.py:56 ERROR 89 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:31:04.604 ERROR wrapper.py:56 ERROR 90 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:31:04.606 ERROR wrapper.py:56 ERROR 90 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
+(MainThread) 210620_21:31:14.573 ERROR wrapper.py:56 ERROR 91 2168 Warning: The 'EtradeOnly' order attribute is not supported.
+(MainThread) 210620_21:31:14.574 ERROR wrapper.py:56 ERROR 91 2169 Warning: The 'FirmQuoteOnly' order attribute is not supported.
