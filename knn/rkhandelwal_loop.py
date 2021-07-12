@@ -4,6 +4,7 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
+import random
 
 # https://medium.datadriveninvestor.com/k-nearest-neighbors-knn-7b4bd0128da7
 
@@ -62,7 +63,7 @@ df_results['accuracy'] = accuracy_list
 i = 0
 test_data = [[3,3,0,0,0,2],[1,0,0,0,0,1],[1,0,0,1,1,2]]
 y_pred_test_data = classifier.predict(test_data)
-print(y_pred_test_data)
+# print(y_pred_test_data)
 
 df_test = pd.DataFrame()
 df_test['inputs'] = test_data
@@ -70,11 +71,58 @@ df_test['results'] = y_pred_test_data
 # print(df_test)
 df_test.to_csv('df_test.csv')
 
+# https://stackoverflow.com/questions/31789160/convert-select-columns-in-pandas-dataframe-to-numpy-array
 df_array = dataset_1[['Buying_1', 'Maint_1', 'doors_1', 'persons_1', 'lug_boot_1', 'safety_1']].values
 # print(df_array)
 
 y_pred_test_data_array = classifier.predict(df_array)
 # print(y_pred_test_data_array)
+
+# create a random set of test data
+rand_lst_n = []
+rand_lst_p = []
+rand_lst_q = []
+rand_lst_r = []
+rand_lst_s = []
+rand_lst_t = []
+
+for i in range(0,20):
+    n = random.randint(0,3)
+    p = random.randint(0,3)
+    q = random.randint(0,3)
+    r = random.randint(0, 2)
+    s = random.randint(0, 2)
+    t = random.randint(0, 2)
+    rand_lst_n.append(n)
+    rand_lst_p.append(p)
+    rand_lst_q.append(q)
+    rand_lst_r.append(r)
+    rand_lst_s.append(s)
+    rand_lst_t.append(t)
+print(rand_lst_n)
+print(rand_lst_p)
+print(rand_lst_q)
+print(rand_lst_r)
+print(rand_lst_s)
+print(rand_lst_t)
+
+df_rand = pd.DataFrame()
+df_rand['Buy2'] = rand_lst_n
+df_rand['Maint2'] = rand_lst_p
+df_rand['Doors2'] = rand_lst_q
+df_rand['Persons2'] = rand_lst_r
+df_rand['Lugg2'] = rand_lst_s
+df_rand['Safety2'] = rand_lst_t
+print(df_rand)
+
+df_rand_array = df_rand[['Buy2', 'Maint2', 'Doors2', 'Persons2', 'Lugg2', 'Safety2']].values
+print(df_rand_array)
+
+y_pred_rand_array = classifier.predict(df_rand_array)
+print(y_pred_rand_array)
+
+df_rand['results'] = y_pred_rand_array
+print(df_rand)
 
 # k = 5
 #
