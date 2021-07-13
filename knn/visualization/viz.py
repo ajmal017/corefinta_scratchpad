@@ -4,6 +4,8 @@ from sklearn import datasets, neighbors
 
 from matplotlib.colors import ListedColormap
 
+# https://towardsdatascience.com/knn-visualization-in-just-13-lines-of-code-32820d72c6b6
+# https://github.com/Adityarajora/Complete-KNN-visualization/blob/master/knn.ipynb
 
 def knn_comparison(data, n_neighbors=15):
     '''
@@ -58,10 +60,9 @@ def knn_comparison(data, n_neighbors=15):
 
     plt.show()
 
-data = np.genfromtxt('6.overlap.csv', delimiter=',')
-knn_comparison(data, 1)
-knn_comparison(data, 5)
-knn_comparison(data,15)
-knn_comparison(data, 30)
-knn_comparison(data, 50)
+data = np.genfromtxt('1.ushape.csv', delimiter=',')
+for i in [1, 5, 15, 30, 50]:
+    knn_comparison(data, i)
+
+
 
