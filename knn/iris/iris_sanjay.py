@@ -8,6 +8,8 @@ from sklearn.neighbors import KNeighborsClassifier
 #import metrics model to check the accuracy
 from sklearn import metrics
 
+import matplotlib.pyplot as plt
+
 # https://towardsdatascience.com/knn-using-scikit-learn-c6bed765be75
 # https://github.com/Msanjayds/Machine_Learning_Projects/blob/master/1.%20KNN%20on%20Iris%20Datset.ipynb
 
@@ -64,3 +66,30 @@ for k in k_range:
         scores_list.append(metrics.accuracy_score(y_test,y_pred))
 
 print(scores)
+
+#plot the relationship between K and the testing accuracy
+
+plt.plot(k_range,scores_list)
+plt.xlabel('Value of K for KNN')
+plt.ylabel('Testing Accuracy')
+# plt.show()
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X,y)
+
+KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=5, p=2,
+           weights='uniform')
+
+
+#0 = setosa, 1=versicolor, 2=virginica
+classes = {0:'setosa',1:'versicolor',2:'virginica'}
+
+#Making prediction on some unseen data
+#predict for the below two random observations
+x_new = [[3,4,5,2],
+         [5,4,2,2]]
+y_predict = knn.predict(x_new)
+
+print(classes[y_predict[0]])
+print(classes[y_predict[1]])
