@@ -56,7 +56,7 @@ df_results['k'] = k_list
 df_results['f1'] = f1_list
 df_results['accuracy'] = accuracy_list
 
-# print(df_results)
+print(df_results)
 # print(Y_pred)
 # print(dataset_1)
 # dataset_1.to_csv('dataset1.csv')

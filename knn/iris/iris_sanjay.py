@@ -10,12 +10,14 @@ from sklearn import metrics
 
 import matplotlib.pyplot as plt
 
+# https://stackoverflow.com/questions/38105539/how-to-convert-a-scikit-learn-dataset-to-a-pandas-dataset
+
 # https://towardsdatascience.com/knn-using-scikit-learn-c6bed765be75
 # https://github.com/Msanjayds/Machine_Learning_Projects/blob/master/1.%20KNN%20on%20Iris%20Datset.ipynb
 
 #Create bunch object containing iris dataset and its attributes.
 iris = load_iris()
-
+# print(iris)
 print(type(iris))
 
 # print(iris.data)
