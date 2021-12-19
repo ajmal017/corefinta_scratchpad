@@ -11,9 +11,9 @@ from collections import deque
 # can be ported to any market data API, for prices and FIX engine to send trades to the market
 NUM_PERIODS = 9
 TICKS_PER_CANDLE = 5
-TICKS_IN_TEST_PERIOD = 390 # how many rows
+TICKS_IN_TEST_PERIOD = 30
 ATR_PERIODS = 21
-SLEEP_SECONDS = 3
+SLEEP_SECONDS = 0
 
 class StockSimulator:
 
@@ -47,6 +47,7 @@ class StockSimulator:
 
     # This is the simulator that executes all the methods
     def simulator(self):
+        self.sleep_seconds = 1
         self.generate_yahoo_stock_px()
 
         while self.tick_count < self.ticks_in_test_period:
@@ -92,7 +93,7 @@ class StockSimulator:
         # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
         # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
         ticker = "NQ=F"
-        data = yf.download(tickers=ticker, start='2020-01-04', end='2021-07-30')
+        data = yf.download(tickers=ticker, start='2001-01-04', end='2003-12-31')
         # data = yf.download(tickers = ticker, period = "5y")
         self.df = data
         self.df = self.df.reset_index()

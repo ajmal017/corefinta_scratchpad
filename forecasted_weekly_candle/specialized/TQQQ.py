@@ -17,7 +17,7 @@ ticker = "NQ=F"
 three_x = 'TQQQ'
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
-data = yf.download(tickers = ticker, period = "1y", interval = '1d')
+data = yf.download(tickers = ticker, period = "2y", interval = '1d')
 #todays_date = datetime.today().strftime('%Y-%m-%d')
 #print(todays_date)
 #data = yf.download(tickers = ticker, start='2020-01-04', end=todays_date, interval = '1d')
@@ -42,7 +42,7 @@ df7 = df.rename(columns = {'Date': 'date', 'Open':'open', 'High': 'high', 'Low':
 # print(df7)
 df7.to_csv('daily.csv')
 
-n = 2
+n = 5
 
 df3 = df7.groupby(np.arange(len(df7))//n).max()
 # print('df3 max:', df3)
@@ -99,9 +99,10 @@ df3['open'] = df2['line_change']
 df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
-periods_change = 1
+# calculate projection angle
+periods_change = 3 # drives the projection
 
-df3['change_SMA'] = TA.SMA(df3, periods_change)
+df3['change_SMA'] = TA.WMA(df3, periods_change) # drives the projection
 # df3.to_csv('sma_change.csv')
 df2['change_SMA'] = df3['change_SMA']
 
@@ -127,7 +128,7 @@ df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 # df2.loc[len(df2), 'lower_band_1'] = df2.loc[len(df2)-1, 'lower_band_1_proj']
 
 # try the loop again
-bars_back = 2
+bars_back = 10
 date_diff = df2.loc[len(df2)-1, 'date'] - df2.loc[len(df2)-2, 'date']
 
 # line_diff = df2.loc[len(df2)-1, 'Line'] - df2.loc[len(df2)-bars_back, 'Line']
@@ -303,4 +304,4 @@ fig1.update_layout(
     title = f'{ticker} Chart'
 )
 
-# fig1.show()
+fig1.show()
