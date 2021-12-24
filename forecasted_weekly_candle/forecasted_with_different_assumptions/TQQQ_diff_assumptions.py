@@ -13,10 +13,10 @@ from datetime import datetime, timedelta
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 """ WMA9 for 2 day bars with ATR 21 """
 
-ticker = "NQ=F"
+ticker = "TQQQ"
 three_x = 'TQQQ'
 
-# data = yf.download(tickers = ticker, start='2002-01-04', end='2004-12-31')
+# data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 data = yf.download(tickers = ticker, period = "1y", interval = '1d')
 #todays_date = datetime.today().strftime('%Y-%m-%d')
 #print(todays_date)
@@ -89,7 +89,7 @@ multiplier = 1
 df2['ATR_diff'] = df2['high'] - df2['low']
 df2['ATR'] = df2['ATR_diff'].ewm(span=num_periods_ATR, adjust=False).mean()
 # df2['ATR'] = df2['ATR_diff'].rolling(window=num_periods_ATR).mean()
-df2['Line'] = df2['WMA']
+df2['Line'] = df2['WMA'].round(2)
 # df2['line_change'] = df2['Line'] - df2['Line'].shift(1)
 df2['line_change'] = df2['Line'] / df2['Line'].shift(1)
 df3 = pd.DataFrame()
@@ -100,7 +100,7 @@ df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
 # calculate projection angle
-periods_change = 2 # drives the projection
+periods_change = 5 # drives the projection
 
 df3['change_SMA'] = TA.WMA(df3, periods_change) # drives the projection
 # df3.to_csv('sma_change.csv')
@@ -112,8 +112,8 @@ df2['lower_band'] = df2['Line'] - multiplier * df2['ATR']
 multiplier_1 = 1.6
 multiplier_2 = 2.3
 
-df2['upper_band_1'] = df2['Line'] + multiplier_1 * df2['ATR']
-df2['lower_band_1'] = df2['Line'] - multiplier_1 * df2['ATR']
+df2['upper_band_1'] = (df2['Line'] + multiplier_1 * df2['ATR']).round(2)
+df2['lower_band_1'] = (df2['Line'] - multiplier_1 * df2['ATR']).round(2)
 
 df2['upper_band_2'] = df2['Line'] + multiplier_2 * df2['ATR']
 df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
@@ -158,9 +158,13 @@ while counter < bars_out:
     df2.loc[len(df2) - 1, 'date'] = date_by_adding_business_days(df2.loc[len(df2) - 2, 'date'], n)
     counter += 1
 
-ATR = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier
-ATR_1 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_1
-ATR_2 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_2
+multiplier_projection = .6
+multiplier_1_projection = .8
+multiplier_2_projection = 1.2
+
+ATR = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_projection
+ATR_1 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_1_projection
+ATR_2 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_2_projection
 
 counter1 = 0
 while counter1 < bars_out:
@@ -195,6 +199,7 @@ recent_price = df2['close'].iloc[-bars_out-1]
 # print(recent_price)
 df2['recent_px'] = recent_price
 df2['dist_to_upper'] = df2['upper_band'] / df2['recent_px'] - 1
+df2['dist_to_lower'] = df2['lower_band'] / df2['recent_px'] - 1
 df2['dist_to_line'] = df2['Line'] / df2['recent_px'] - 1
 
 etf_data = yf.download(tickers = three_x, period = '5d', interval = '1d')
@@ -203,10 +208,11 @@ recent_etf = etf_df['Close'].iloc[-1]
 # print(recent_etf)
 df2['etf'] = recent_etf
 df2['etf_upper'] = df2['etf']*(1 + df2['dist_to_upper']*3)
+df2['etf_lower'] = df2['etf']*(1 + df2['dist_to_lower']*3)
 df2['etf_line'] = df2['etf']*(1 + df2['dist_to_line']*3)
 
 # selected_range = df2[['date', 'upper_band', 'lower_band', 'Line']].tail(21)
-selected_range = df2[['date', 'etf', 'etf_line', 'etf_upper']].tail(21).round(2)
+selected_range = df2[['date', 'etf', 'etf_line', 'etf_upper', 'etf_lower']].tail(21).round(2)
 print(selected_range)
 selected_range.to_csv('selected.csv')
 #print(df2[['date', 'upper_band', 'lower_band', 'upper_band_1','lower_band_1', 'Line']].tail(25))
@@ -224,7 +230,7 @@ fig1 = go.Figure(data=[go.Candlestick(x=df2['date'],
                 open=df2['open'],
                 high=df2['high'],
                 low=df2['low'],
-                close=df2['close'], showlegend=True)]
+                close=df2['close'])]
 
 )
 
@@ -268,43 +274,40 @@ fig1.add_trace(
         showlegend=True)
 )
 
-fig1.add_trace(
-    go.Scatter(
-        x=df2['date'],
-        y=df2['upper_band_2'].round(2),
-        name='upper band_2',
-        mode="lines",
-        line=go.scatter.Line(color="gray"),
-        showlegend=True)
-)
+# fig1.add_trace(
+#     go.Scatter(
+#         x=df2['date'],
+#         y=df2['upper_band_2'],
+#         name='upper band_2',
+#         mode="lines",
+#         line=go.scatter.Line(color="gray"),
+#         showlegend=True)
+# )
+
+# fig1.add_trace(
+#     go.Scatter(
+#         x=df2['date'],
+#         y=df2['lower_band_2'],
+#         name='lower band_2',
+#         mode="lines",
+#         line=go.scatter.Line(color="gray"),
+#         showlegend=True)
+# )
+
+
 
 fig1.add_trace(
     go.Scatter(
         x=df2['date'],
-        y=df2['lower_band_2'].round(2),
-        name='lower band_2',
-        mode="lines",
-        line=go.scatter.Line(color="gray"),
-        showlegend=True)
-)
-
-
-
-fig1.add_trace(
-    go.Scatter(
-        x=df2['date'],
-        y=df2['Line'].round(2),
+        y=df2['Line'],
         name="WMA",
         mode="lines",
         line=go.scatter.Line(color="blue"),
         showlegend=True)
 )
 
-
-
 fig1.update_layout(
     title = f'{ticker} Chart', hovermode = 'x unified'
 )
-
 
 fig1.show()
