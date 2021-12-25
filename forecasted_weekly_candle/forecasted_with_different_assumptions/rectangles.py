@@ -97,7 +97,7 @@ fig1.add_annotation(x='2021-12-09', y=183,
 
 fig1.update_shapes(dict(xref='x', yref='y'))
 
-fig1.update_layout(hovermode='x', spikedistance = -1, width=1800, height=1200)
+fig1.update_layout(hovermode='x', spikedistance = -1, width=1800, height=1200, title=ticker)
 
 # fig1.update_xaxes(showspikes=True, spikemode='across', spikesnap='cursor', showline=True, showgrid=True)
 

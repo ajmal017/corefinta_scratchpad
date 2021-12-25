@@ -7,13 +7,13 @@ import plotly.express as px
 
 import pandas as pd
 
-from datetime import timedelta
+import datetime
 
 """ do WMA 9 (all ATR w/i 1 band) 21 or 34 (smooth trend) for daily or 9 for weekly n = 5 ATR = 21"""
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 """ WMA9 for 2 day bars with ATR 21 """
 
-ticker = "ES=F"
+ticker = "NQ=F"
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 data = yf.download(tickers = ticker, period = "2y", interval = '1d')
@@ -95,6 +95,10 @@ neck_list = df['neckline'].tolist()
 
 neck_list = [i for i in neck_list if i != 0]
 
+# https://stackoverflow.com/questions/60903774/python-last-number-repeat-more-than-once?rq=1
+
+neck_list.append(neck_list[-1])
+
 print(neck_list)
 
 df['neck_date'] = np.where(df['neckline'], df['roll_max_date'], 0)
@@ -105,7 +109,11 @@ neck_date_list = df['neck_date'].tolist()
 
 neck_date_list = [i for i in neck_date_list if i != 0]
 
+neck_date_list.append(df['Date'].iloc[-1])
+
 print(neck_date_list)
+
+total_runs = int(len(neck_date_list))
 
 # convert 2 columns into a dictionary
 
@@ -114,6 +122,8 @@ print(neck_date_list)
 # https://stackoverflow.com/questions/66311549/how-do-i-loop-over-multiple-figures-in-plotly
 
 # https://stackoverflow.com/questions/60926439/plotly-add-traces-using-a-loop
+
+# https://stackoverflow.com/questions/58493254/how-to-add-more-than-one-shape-with-loop-in-plotly
 
 print(df)
 
@@ -130,54 +140,17 @@ fig1 = go.Figure(data=[go.Candlestick(x=df['Date'],
 
 )
 
-fig1.add_shape(type="rect",
-    x0=neck_date_list[0], y0=neck_list[0], x1=neck_date_list[1], y1=neck_list[0],
-    line=dict(
-        color="LightSeaGreen",
-        width=2,
-    ),
-   fillcolor="RoyalBlue", opacity=0.4,
+for i in range(0, total_runs-1):
+    fig1.add_shape(type="line",
+        x0=neck_date_list[i], y0=neck_list[i], x1=neck_date_list[i+1], y1=neck_list[i],
+        line=dict(
+            color="LightSeaGreen",
+            width=2,
+        ),
+    )
 
-)
+fig1.update_layout(hovermode='x', spikedistance = -1, width=1800, height=1200, title=ticker)
 
-fig1.add_shape(type="rect",
-    x0=neck_date_list[1], y0=neck_list[1], x1=neck_date_list[2], y1=neck_list[1],
-    line=dict(
-        color="LightSeaGreen",
-        width=2,
-    ),
-   fillcolor="RoyalBlue", opacity=0.4,
-
-)
-
-fig1.add_shape(type="rect",
-    x0=neck_date_list[2], y0=neck_list[2], x1=neck_date_list[3], y1=neck_list[2],
-    line=dict(
-        color="LightSeaGreen",
-        width=2,
-    ),
-   fillcolor="RoyalBlue", opacity=0.4,
-
-)
-
-fig1.add_shape(type="rect",
-    x0=neck_date_list[3], y0=neck_list[3], x1=neck_date_list[4], y1=neck_list[3],
-    line=dict(
-        color="LightSeaGreen",
-        width=2,
-    ),
-   fillcolor="RoyalBlue", opacity=0.4,
-
-)
-
-fig1.add_shape(type="rect",
-    x0=neck_date_list[4], y0=neck_list[4], x1=neck_date_list[5], y1=neck_list[4],
-    line=dict(
-        color="LightSeaGreen",
-        width=2,
-    ),
-   fillcolor="RoyalBlue", opacity=0.4,
-
-)
+fig1.update_yaxes(showspikes=True, spikemode='across', spikesnap='cursor', showline=True, showgrid=True, ticks='inside')
 
 fig1.show()
