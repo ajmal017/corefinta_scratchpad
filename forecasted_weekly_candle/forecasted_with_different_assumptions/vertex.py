@@ -13,7 +13,7 @@ import datetime
 """ do change period 45 or 15 or 6 on weeklies - go back to the place of trend change"""
 """ WMA9 for 2 day bars with ATR 21 """
 
-ticker = "ES=F"
+ticker = "NQ=F"
 
 # data = yf.download(tickers = ticker, start='2019-01-04', end='2021-06-09')
 data = yf.download(tickers = ticker, period = "2y", interval = '1d')
@@ -59,21 +59,51 @@ df['trigger'] = df['slope'].eq(df['slope'].shift())
 
 df['trigger'] = df['trigger'].astype(int)
 
-df['neckline_trigger'] = (df['trigger'] == 0) & (df['slope'] > 0)
-
-df['neckline_trigger'] = df['neckline_trigger'].astype(int)
-
-# df['rolling_min'] = df['Low'].rolling(window=3).min().shift(1).fillna(0)
+# vertex
 
 df['rolling_min'] = df['Low'].rolling(window=4).min().fillna(0)
 
-df['vertex'] = np.where(df['neckline_trigger'], df['rolling_min'], 0)
+df['roll_min_trigger'] = df['rolling_min'].eq(df['rolling_min'].shift())
 
-df['sell'] = (df['trigger'] == 0) & (df['slope'] == 0)
+df['roll_min_trigger'] = df['roll_min_trigger'].astype(int)
 
-df['sell'] = df['sell'].astype(int)
+df['roll_min_date_bool'] = (df['roll_min_trigger'] == 0)
 
-# df['rolling_max'] = df['High'].rolling(window=3).max().shift(1).fillna(0)
+df['roll_min_date'] = df['Date'].where(df['roll_min_date_bool'])
+
+df['roll_min_date'] = df['roll_min_date'].fillna(method='ffill')
+
+df['buy'] = (df['trigger'] == 0) & (df['slope'] > 0)
+
+df['buy'] = df['buy'].astype(int)
+
+df['vertex'] = np.where(df['buy'], df['rolling_min'], 0)
+
+# convert vertex to list
+
+vertex_list = df['vertex'].tolist()
+
+vertex_list = [i for i in vertex_list if i != 0]
+
+# # https://stackoverflow.com/questions/60903774/python-last-number-repeat-more-than-once?rq=1
+
+vertex_list.append(vertex_list[-1])
+
+print(vertex_list)
+
+df['vertex_date'] = np.where(df['vertex'], df['roll_min_date'], 0)
+
+# # https://stackoverflow.com/questions/36684013/extract-column-value-based-on-another-column-pandas-dataframe?rq=1
+
+vertex_date_list = df['vertex_date'].tolist()
+
+vertex_date_list = [i for i in vertex_date_list if i != 0]
+
+vertex_date_list.append(df['Date'].iloc[-1])
+
+print(vertex_date_list)
+
+# neckline
 
 df['rolling_max'] = df['High'].rolling(window=4).max().fillna(0)
 
@@ -87,7 +117,13 @@ df['roll_max_date'] = df['Date'].where(df['roll_max_date_bool'])
 
 df['roll_max_date'] = df['roll_max_date'].fillna(method='ffill')
 
+df['sell'] = (df['trigger'] == 0) & (df['slope'] == 0)
+
+df['sell'] = df['sell'].astype(int)
+
 df['neckline'] = np.where(df['sell'], df['rolling_max'], 0)
+
+# df.to_csv('vertex.csv')
 
 # convert neckline to list
 
@@ -113,10 +149,6 @@ neck_date_list.append(df['Date'].iloc[-1])
 
 print(neck_date_list)
 
-total_runs = int(len(neck_date_list))
-
-# convert 2 columns into a dictionary
-
 # https://cmdlinetips.com/2021/04/convert-two-column-values-from-pandas-dataframe-to-a-dictionary/
 
 # https://stackoverflow.com/questions/66311549/how-do-i-loop-over-multiple-figures-in-plotly
@@ -124,13 +156,6 @@ total_runs = int(len(neck_date_list))
 # https://stackoverflow.com/questions/60926439/plotly-add-traces-using-a-loop
 
 # https://stackoverflow.com/questions/58493254/how-to-add-more-than-one-shape-with-loop-in-plotly
-
-print(df)
-
-df.to_csv('switch.csv')
-
-# fig = px.scatter(x=neck_date_list, y=neck_list)
-# fig.show()
 
 fig1 = go.Figure(data=[go.Candlestick(x=df['Date'],
                 open=df['Open'],
@@ -140,11 +165,24 @@ fig1 = go.Figure(data=[go.Candlestick(x=df['Date'],
 
 )
 
+total_runs = int(len(neck_date_list))
+
 for i in range(0, total_runs-1):
     fig1.add_shape(type="line",
         x0=neck_date_list[i], y0=neck_list[i], x1=neck_date_list[i+1], y1=neck_list[i],
         line=dict(
             color="LightSeaGreen",
+            width=2,
+        ) ,
+    )
+
+total_vertex_runs=int(len(vertex_date_list))
+
+for j in range(0, total_vertex_runs-1):
+    fig1.add_shape(type="line",
+        x0=vertex_date_list[j], y0=vertex_list[j], x1=vertex_date_list[j+1], y1=vertex_list[j],
+        line=dict(
+            color="darkred",
             width=2,
         ) ,
     )
@@ -157,12 +195,11 @@ fig1.add_annotation(x=neck_date_list[-2], y=neck_list[-1],
             arrowhead=1)
 
 annote1 = "{:.2f}".format(float(neck_list[-3]))
+
 fig1.add_annotation(x=neck_date_list[-3], y=neck_list[-3],
                             text=annote1,
                             showarrow=True,
                             arrowhead=1)
-
-# fig1.update_layout(hovermode='y', width=1800, height=1200, title=ticker)
 
 fig1.update_layout(dict(hovermode='x'), spikedistance = -1, width=1800, height=1200, title=ticker)
 
