@@ -6,9 +6,9 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta
 
-ticker = "AAPL"
+ticker = "TQQQ"
 data = yf.download(tickers = ticker, start='2020-01-04', end='2021-12-10')
-# data = yf.download(tickers = ticker, period = "3y")
+#data = yf.download(tickers = ticker, period = "3y")
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -109,7 +109,7 @@ df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 # forecasting begins
 
 # df2['line_change'] = df2['Line'] - df2['Line'].shift(1)
-df2['line_change'] = df2['Line'] / df2['Line'].shift(1)
+df2['line_change'] = df2['Line'] - df2['Line'].shift(1)
 df3 = pd.DataFrame()
 df3['date'] = df2['date']
 df3['close'] = df2['line_change']
@@ -118,8 +118,8 @@ df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
 # calculate projection angle
-slope_begin_date = '2020-05-06'
-slope_end_date = '2020-06-11'
+slope_begin_date = '2020-12-15'
+slope_end_date = '2021-01-29'
 begin_date_index = df3[df3['date'] == slope_begin_date].index.values.astype(int)[0]
 end_date_index = df3[df3['date'] == slope_end_date].index.values.astype(int)[0]
 print(begin_date_index)
@@ -159,7 +159,7 @@ counter = 0
 bars_out = 20
 while counter < bars_out:
 
-    df2.loc[len(df2), 'Line'] = df2.loc[len(df2) - 1, 'Line'] * line_diff
+    df2.loc[len(df2), 'Line'] = df2.loc[len(df2) - 1, 'Line'] + line_diff
     df2.loc[len(df2) - 1, 'date'] = date_by_adding_business_days(df2.loc[len(df2) - 2, 'date'], n)
     counter += 1
 

@@ -6,9 +6,9 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta
 
-ticker = "AAPL"
+ticker = "NQ=F"
 data = yf.download(tickers = ticker, start='2020-01-04', end='2021-12-10')
-# data = yf.download(tickers = ticker, period = "3y")
+#data = yf.download(tickers = ticker, period = "3y")
 
 # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
@@ -109,7 +109,7 @@ df2['lower_band_2'] = df2['Line'] - multiplier_2 * df2['ATR']
 # forecasting begins
 
 # df2['line_change'] = df2['Line'] - df2['Line'].shift(1)
-df2['line_change'] = df2['Line'] / df2['Line'].shift(1)
+df2['line_change'] = df2['Line'] - df2['Line'].shift(1)
 df3 = pd.DataFrame()
 df3['date'] = df2['date']
 df3['close'] = df2['line_change']
@@ -117,22 +117,47 @@ df3['open'] = df2['line_change']
 df3['high'] = df2['line_change']
 df3['low'] = df2['line_change']
 
-# calculate projection angle
-slope_begin_date = '2020-05-06'
-slope_end_date = '2020-06-11'
-begin_date_index = df3[df3['date'] == slope_begin_date].index.values.astype(int)[0]
-end_date_index = df3[df3['date'] == slope_end_date].index.values.astype(int)[0]
-print(begin_date_index)
-print(end_date_index)
-slope_bars = end_date_index - begin_date_index
+# calculate dates from which to calculate slope
+slope_begin_date = '2020-12-15'
+slope_end_date = '2021-01-29'
+slope_begin_date_index = df3[df3['date'] == slope_begin_date].index.values.astype(int)[0]
+slope_end_date_index = df3[df3['date'] == slope_end_date].index.values.astype(int)[0]
+print(slope_begin_date_index)
+print(slope_end_date_index)
+slope_bars = slope_end_date_index - slope_begin_date_index
 print(slope_bars)
-periods_change = int(slope_bars) # drives the projection by choosing number of periods back
-df3['change_SMA'] = TA.SMA(df3, periods_change) # drives the projection
+slope_periods_change = int(slope_bars) # drives the projection by choosing number of periods back
+
+# calculate slope
+df3['change_SMA'] = TA.SMA(df3, slope_periods_change) # drives the projection
 
 df3.to_csv('sma_change.csv')
 
-slope = df3['change_SMA'].iloc[end_date_index]
+slope = df3['change_SMA'].iloc[slope_end_date_index]
 print(slope)
+
+# calculate atr
+df4 = pd.DataFrame()
+df4['date'] = df2['date']
+df4['close'] = df2['ATR']
+df4['open'] = df2['ATR']
+df4['high'] = df2['ATR']
+df4['low'] = df2['ATR']
+
+
+atr_begin_date = '2020-12-01'
+atr_end_date = '2021-02-05'
+atr_begin_date_index = df4[df4['date'] == atr_begin_date].index.values.astype(int)[0]
+atr_end_date_index = df4[df4['date'] == atr_end_date].index.values.astype(int)[0]
+atr_bars = atr_end_date_index - atr_begin_date_index
+
+atr_periods_change = int(atr_bars)
+
+df4['forecasted_ATR'] = TA.SMA(df4, atr_periods_change)
+df4.to_csv('forecasted_ATR.csv')
+
+ATR = df4['forecasted_ATR'].iloc[atr_end_date_index]
+print(ATR)
 
 # try the loop again
 
@@ -159,13 +184,13 @@ counter = 0
 bars_out = 20
 while counter < bars_out:
 
-    df2.loc[len(df2), 'Line'] = df2.loc[len(df2) - 1, 'Line'] * line_diff
+    df2.loc[len(df2), 'Line'] = df2.loc[len(df2) - 1, 'Line'] + line_diff
     df2.loc[len(df2) - 1, 'date'] = date_by_adding_business_days(df2.loc[len(df2) - 2, 'date'], n)
     counter += 1
 
-ATR = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier
-ATR_1 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_1
-ATR_2 = df2.loc[len(df2) - bars_out - 1, 'ATR'] * multiplier_2
+ATR = ATR * multiplier
+ATR_1 = ATR * multiplier_1
+ATR_2 = ATR * multiplier_2
 
 counter1 = 0
 while counter1 < bars_out:
