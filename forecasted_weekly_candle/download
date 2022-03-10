@@ -1,0 +1,9 @@
+import pandas as pd
+
+url = "https://sample-videos.com/xls/Sample-Spreadsheet-10-rows.xls"
+df = pd.read_excel(url)
+print(df)
+df.to_csv('readout.csv')
+
+# https://stackoverflow.com/questions/56999836/download-excel-file-using-python
+
